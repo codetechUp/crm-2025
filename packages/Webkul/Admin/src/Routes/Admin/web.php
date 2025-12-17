@@ -41,6 +41,11 @@ require 'activities-routes.php';
 require 'quote-routes.php';
 
 /**
+ * Factures routes.
+ */
+require 'facture-routes.php';
+
+/**
  * Configuration routes.
  */
 require 'configuration-routes.php';

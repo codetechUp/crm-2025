@@ -123,7 +123,7 @@
     .icon-settings-roles:before {
         content: "\e940";
     }
-
+    
     .icon-settings-sources:before {
         content: "\e941";
     }
@@ -351,7 +351,9 @@
     .icon-cross-large:before {
         content: "\e91c";
     }
-
+ 
+    /* OU si vous voulez un emoji/autre symbole */
+   
     .icon-left-arrow:before {
         content: "\e91d";
     }
@@ -379,7 +381,36 @@
     .icon-add-2:before {
         content: "\e923";
     }
+.icon-convert::before {
+    content: "🔄";
+    font-family: inherit;
+    display: inline-block;
+    margin-right: 6px;
+    font-size: 1.1em;
+    vertical-align: middle;
+    line-height: 1;
+    transition: transform 0.3s ease;
+}
 
+/* Animation au survol */
+.icon-loop:hover::before {
+    transform: rotate(90deg);
+}
+
+/* Version sans texte (juste l'icône) */
+.icon-loop.alone::before {
+    margin-right: 0;
+    font-size: 1.3em;
+}
+
+/* Taille personnalisée */
+.icon-loop.small::before {
+    font-size: 0.9em;
+}
+
+.icon-loop.large::before {
+    font-size: 1.5em;
+}
     .label-active {
         @apply max-w-max rounded-md bg-emerald-200 px-3 py-1.5 text-xs font-medium text-emerald-900;
     }

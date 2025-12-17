@@ -1,12 +1,12 @@
 <?php
 
-namespace Webkul\Admin\DataGrids\Quote;
+namespace Webkul\Admin\DataGrids\Facture;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 use Webkul\DataGrid\DataGrid;
 
-class QuoteDataGrid extends DataGrid
+class FactureDataGrid extends DataGrid
 {
     /**
      * Prepare query builder.
@@ -16,7 +16,7 @@ class QuoteDataGrid extends DataGrid
         $tablePrefix = DB::getTablePrefix();
 
         $queryBuilder = DB::table('quotes')
-            ->where('quotes.type', 'devis') 
+         ->where('quotes.type', 'facture') 
             ->addSelect(
                 'quotes.id',
                 'quotes.subject',
@@ -183,19 +183,11 @@ class QuoteDataGrid extends DataGrid
                 'icon'   => 'icon-edit',
                 'title'  => trans('admin::app.quotes.index.datagrid.edit'),
                 'method' => 'GET',
-                'url'    => fn ($row) => route('admin.quotes.edit', $row->id),
+                'url'    => fn ($row) => route('admin.factures.edit', $row->id),
             ]);
         }
 
         if (bouncer()->hasPermission('quotes.print')) {
-            $this->addAction([
-                'index'  => 'print',
-                'icon'   => 'icon-settings-webforms',
-                'title'  => trans('admin::app.quotes.index.datagrid.print'),
-                'method' => 'GET',
-                'url'    => fn ($row) => route('admin.quotes.print', $row->id),
-            ]);
-
             $this->addAction([
                 'index'  => 'print',
                 'icon'   => 'icon-print',

@@ -480,7 +480,7 @@ return [
             'save-btn'          => 'Enregistrer le devis',
             'quote-info'        => 'Informations du devis',
             'quote-info-info'   => 'Entrez les informations de base du devis.',
-            'address-info'      => 'Informations d\'adresse',
+            'address-info'      => 'Informations adresse',
             'address-info-info' => 'Informations sur l\'adresse liée au devis.',
             'quote-items'       => 'Articles du devis',
             'search-products'   => 'Rechercher des produits',

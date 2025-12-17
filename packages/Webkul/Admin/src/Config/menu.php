@@ -16,8 +16,8 @@ return [
      * Leads.
      */
     [
-        'key'        => 'Prospects',
-        'name'       => 'Prospects',
+        'key'        => 'leads',
+        'name'       => 'admin::app.layouts.leads',
         'route'      => 'admin.leads.index',
         'sort'       => 2,
         'icon-class' => 'icon-leads',
@@ -27,7 +27,7 @@ return [
      * Quotes.
      */
     [
-        'key'        => 'Devis',
+        'key'        => 'quotes',
         'name'       => 'admin::app.layouts.quotes',
         'route'      => 'admin.quotes.index',
         'sort'       => 3,
@@ -92,8 +92,8 @@ return [
      * Activities.
      */
     [
-        'key'        => 'Activités',
-        'name'       => 'Activités',
+        'key'        => 'activities',
+        'name'       => 'admin::app.layouts.activities',
         'route'      => 'admin.activities.index',
         'sort'       => 5,
         'icon-class' => 'icon-activity',
@@ -104,19 +104,19 @@ return [
      */
     [
         'key'        => 'contacts',
-        'name'       => 'Contacts',
+        'name'       => 'admin::app.layouts.contacts',
         'route'      => 'admin.contacts.persons.index',
         'sort'       => 6,
         'icon-class' => 'icon-contact',
     ], [
         'key'        => 'contacts.persons',
-        'name'       => 'Personnes',
+        'name'       => 'admin::app.layouts.persons',
         'route'      => 'admin.contacts.persons.index',
         'sort'       => 1,
         'icon-class' => '',
     ], [
         'key'        => 'contacts.organizations',
-        'name'       => 'Entreprise',
+        'name'       => 'admin::app.layouts.organizations',
         'route'      => 'admin.contacts.organizations.index',
         'sort'       => 2,
         'icon-class' => '',
@@ -126,8 +126,8 @@ return [
      * Products.
      */
     [
-        'key'        => 'Produits',
-        'name'       => 'Produits',
+        'key'        => 'products',
+        'name'       => 'admin::app.layouts.products',
         'route'      => 'admin.products.index',
         'sort'       => 7,
         'icon-class' => 'icon-product',
@@ -138,7 +138,7 @@ return [
      */
     [
         'key'        => 'settings',
-        'name'       => 'Paramètres',
+        'name'       => 'admin::app.layouts.settings',
         'route'      => 'admin.settings.index',
         'sort'       => 8,
         'icon-class' => 'icon-setting',
@@ -294,6 +294,13 @@ return [
         'route'      => 'admin.configuration.index',
         'sort'       => 9,
         'icon-class' => 'icon-configuration',
+    ],
+    [
+        'key'        => 'factures',
+        'name'       => 'Factures',
+        'route'      => 'admin.factures.index',
+        'sort'       => 9,
+        'icon-class' => 'icon-settings-webforms',
     ],
 
 ];
