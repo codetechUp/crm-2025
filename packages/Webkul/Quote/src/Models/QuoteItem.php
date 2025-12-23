@@ -3,6 +3,7 @@
 namespace Webkul\Quote\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Webkul\Product\Models\ProductProxy;
 use Webkul\Quote\Contracts\QuoteItem as QuoteItemContract;
 
 class QuoteItem extends Model implements QuoteItemContract
@@ -35,5 +36,9 @@ class QuoteItem extends Model implements QuoteItemContract
     public function quote()
     {
         return $this->belongsTo(QuoteProxy::modelClass());
+    }
+    public function product()
+    {
+        return $this->belongsTo(ProductProxy::modelClass());
     }
 }

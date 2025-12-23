@@ -51,6 +51,12 @@ require 'facture-routes.php';
 require 'configuration-routes.php';
 
 /**
+ * Depense routes.
+ */
+require 'depense-routes.php';
+
+
+/**
  * Rest routes.
  */
 require 'rest-routes.php';

@@ -25,6 +25,7 @@ class ProductDataGrid extends DataGrid
                 'products.sku',
                 'products.name',
                 'products.price',
+                'products.quantity',
                 'tags.name as tag_name',
             )
             ->addSelect(DB::raw('SUM('.$tablePrefix.'product_inventories.in_stock) as total_in_stock'))
@@ -37,6 +38,7 @@ class ProductDataGrid extends DataGrid
         }
 
         $this->addFilter('id', 'products.id');
+         $this->addFilter('quantity', 'quantity.id');
         $this->addFilter('total_in_stock', DB::raw('SUM('.$tablePrefix.'product_inventories.in_stock'));
         $this->addFilter('total_allocated', DB::raw('SUM('.$tablePrefix.'product_inventories.allocated'));
         $this->addFilter('total_on_hand', DB::raw('SUM('.$tablePrefix.'product_inventories.in_stock - '.$tablePrefix.'product_inventories.allocated'));
@@ -79,13 +81,13 @@ class ProductDataGrid extends DataGrid
         ]);
 
         $this->addColumn([
-            'index'    => 'total_in_stock',
+            'index'    => 'quantity',
             'label'    => trans('admin::app.products.index.datagrid.in-stock'),
             'type'     => 'string',
             'sortable' => true,
         ]);
 
-        $this->addColumn([
+        /*$this->addColumn([
             'index'    => 'total_allocated',
             'label'    => trans('admin::app.products.index.datagrid.allocated'),
             'type'     => 'string',
@@ -97,7 +99,7 @@ class ProductDataGrid extends DataGrid
             'label'    => trans('admin::app.products.index.datagrid.on-hand'),
             'type'     => 'string',
             'sortable' => true,
-        ]);
+        ]); */
 
         $this->addColumn([
             'index'              => 'tag_name',

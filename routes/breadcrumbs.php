@@ -8,6 +8,28 @@ Breadcrumbs::for('dashboard', function (BreadcrumbTrail $trail) {
     $trail->push(trans('admin::app.layouts.dashboard'), route('admin.dashboard.index'));
 });
 
+
+Breadcrumbs::for('depenses', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push(trans('admin::app.layouts.depenses'), route('admin.depenses.index'));
+});
+
+// Dashboard > depenses > Create
+Breadcrumbs::for('depenses.create', function (BreadcrumbTrail $trail) {
+    $trail->parent('depenses');
+    $trail->push(trans('admin::app.depenses.create.title'), route('admin.depenses.create'));
+});
+
+Breadcrumbs::for('depenses.edit', function (BreadcrumbTrail $trail, $depenseId) {
+    $trail->parent('depenses');
+    $trail->push(
+        trans('admin::app.depenses.edit.title'),
+        route('admin.depenses.edit', $depenseId)
+    );
+});
+
+
+
 // Dashboard > Leads
 Breadcrumbs::for('leads', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
