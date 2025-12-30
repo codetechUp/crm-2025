@@ -78,8 +78,7 @@
             "Webkul\\Automation\\": "packages/Webkul/Automation/src",
             "Webkul\\Admin\\": "packages/Webkul/Admin/src",
             "Webkul\\Core\\": "packages/Webkul/Core/src",
-            "Webkul\\Depense\\": "packages/Webkul/Depense/src"
-     
+            "Webkul\\Depense\\": "packages/Webkul/Depense/src"  
 }
         
     },
