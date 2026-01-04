@@ -13,7 +13,7 @@ return [
         'key' => 'finance',
             'name' => 'Dépenses',
             'route' => 'admin.depenses.index',
-            'icon-class' => 'icon-money',
+            'icon-class' => 'icon-settings-warehouse',
             'sort' => 10,
     ],
 

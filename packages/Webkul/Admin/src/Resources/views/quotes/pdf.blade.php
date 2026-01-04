@@ -1,408 +1,344 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html
-    lang="{{ $locale = app()->getLocale() }}"
-    dir="{{ in_array($locale, ['fa', 'ar']) ? 'rtl' : 'ltr' }}"
->
-    <head>
-        <!-- meta tags -->
-        <meta
-            http-equiv="Cache-control"
-            content="no-cache"
-        >
+<!DOCTYPE html>
+<html class="no-js" lang="fr">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ $quote->type_ }} N° {{ $quote->id }}</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="https://crm.webmasteragency.fr/assets/css/style.css">
+    
+    <style>
+        .color-list {
+            display: inline-block;
+            list-style-type: none;
+            padding: 0;
+        }
 
-        <meta
-            http-equiv="Content-Type"
-            content="text/html; charset=utf-8"
-        />
+        .color-item {
+            width: 30px;
+            height: 30px;
+            margin: 5px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
 
-        @php
-            if ($locale == 'en') {
-                $fontFamily = [
-                    'regular' => 'DejaVu Sans',
-                    'bold'    => 'DejaVu Sans',
-                ];
-            }  else {
-                $fontFamily = [
-                    'regular' => 'Arial, sans-serif',
-                    'bold'    => 'Arial, sans-serif',
-                ];
-            }
-
-            if (in_array($locale, ['ar', 'fa', 'tr'])) {
-                $fontFamily = [
-                    'regular' => 'DejaVu Sans',
-                    'bold'    => 'DejaVu Sans',
-                ];
-            }
-        @endphp
-
-        <!-- lang supports inclusion -->
-        <style type="text/css">
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-                font-family: {{ $fontFamily['regular'] }};
-            }
-
-            body {
-                font-size: 10px;
-                color: #091341;
-                font-family: "{{ $fontFamily['regular'] }}";
-            }
-
-            b, th {
-                font-family: "{{ $fontFamily['bold'] }}";
-            }
-
-            .page-content {
-                padding: 12px;
-            }
-
-            .page-header {
-                border-bottom: 1px solid #E9EFFC;
-                text-align: center;
-                font-size: 24px;
-                text-transform: uppercase;
-                color: #000DBB;
-                padding: 24px 0;
-                margin: 0;
-            }
-
-            .logo-container {
-                position: absolute;
-                top: 20px;
-                left: 20px;
-            }
-
-            .logo-container.rtl {
-                left: auto;
-                right: 20px;
-            }
-
-            .logo-container img {
-                max-width: 100%;
-                height: auto;
-            }
-
-            .page-header b {
-                display: inline-block;
-                vertical-align: middle;
-            }
-
-            .small-text {
-                font-size: 7px;
-            }
-
-            table {
-                width: 100%;
-                border-spacing: 1px 0;
-                border-collapse: separate;
-                margin-bottom: 16px;
+        .color-item.selected {
+            border: 2px solid black;
+        }
+        
+        /* Styles pour assurer la compatibilité */
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        /* Styles spécifiques pour l'impression et le PDF */
+        .tm_container {
+            position: relative;
+            min-height: 100vh;
+        }
+        
+        .tm_invoice_wrap {
+            position: relative;
+            min-height: 1123px; /* Hauteur approximative A4 (841.89pt ≈ 1123px) */
+        }
+        
+        .bank-info-container {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            width: 100%;
+        }
+        
+        @media print {
+            .tm_invoice_btns,
+            .color-list {
+                display: none !important;
             }
             
-            table thead th {
-                background-color: #E9EFFC;
-                color: #000DBB;
-                padding: 6px 18px;
-                text-align: left;
+            body {
+                padding: 0;
+                margin: 0;
             }
-
-            table.rtl thead tr th {
-                text-align: right;
+            
+            .tm_container {
+                height: 100vh;
             }
-
-            table tbody td {
-                padding: 9px 18px;
-                border-bottom: 1px solid #E9EFFC;
-                text-align: left;
-                vertical-align: top;
+            
+            .tm_invoice_wrap {
+                min-height: 100vh;
+                position: relative;
             }
+        }
+        
+        /* Assurer que le contenu principal n'empiète pas sur les infos bancaires */
+        .tm_invoice {
+            padding-bottom: 100px; /* Espace pour les infos bancaires */
+        }
+    </style>
+</head>
 
-            table.rtl tbody tr td {
-                text-align: right;
-            }
+<body>
+    <div class="tm_container">
+        <div class="tm_invoice_wrap">
+            <div class="tm_invoice tm_style2" id="tm_download_section">
+                <div class="tm_invoice_in">
+                    <!-- ================= HEADER ================= -->
+                    <div class="tm_invoice_head tm_top_head tm_mb20">
+                        <div class="tm_invoice_left">
+                            <div class="tm_logo">
+                                <img src="{{ asset('storage/'.core()->getConfigData('general.general.admin_logo.logo_image')) }}" alt="Logo" height="70">
+                            </div>
+                        </div>
+                        <div class="tm_invoice_right">
+                            <div class="tm_grid_row tm_col_3">
+                                <div>
+                                    <b class="tm_primary_color">Registre N°</b><br>
+                                    {{ core()->getConfigData('general.general.registre_commerce.registre_commerce') }}
+                                </div>
+                                <div>
+                                    <b class="tm_primary_color">Ninea</b><br>
+                                    {{ core()->getConfigData('general.general.ninea.ninea') }}
+                                </div>
+                                <div>
+                                    <b class="tm_primary_color">Adresse</b><br>
+                                    {{ core()->getConfigData('general.general.adresse_siege.adresse_siege') }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-            .summary {
-                width: 100%;
-                display: inline-block;
-            }
+                    <!-- ================= CLIENT & TITLE ================= -->
+                    <div class="tm_invoice_info tm_mb10">
+                        <div class="tm_invoice_info_left">
+                            <p class="tm_mb2"><b></b></p>
+                            <p>
+                                <b class="tm_f16 tm_primary_color">À : {{ $quote->person->name }}</b><br>
+                            </p>
+                        </div>
+                        <div class="tm_invoice_info_right">
+                            <p style="float: right" class="">Date : {{ $quote->created_at->format('d F Y') }}</p>
+                            <div class="tm_ternary_color tm_f40 tm_invoice_title">
+                                {{ strtoupper($quote->type) }} N° {{ $quote->id }}
+                            </div>
+                        </div>
+                    </div>
 
-            .summary table {
-                float: right;
-                width: 250px;
-                padding-top: 5px;
-                padding-bottom: 5px;
-                background-color: #E9EFFC;
-                white-space: nowrap;
-            }
+                    <!-- ================= ITEMS TABLE ================= -->
+                    <div class="tm_table tm_style1">
+                        <div class="tm_round_border">
+                            <div class="tm_table_responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th class="tm_width_7 tm_semi_bold" style="color: white; background-color:#0000ff" id="color">Description</th>
+                                            <th class="tm_width_2 tm_semi_bold" style="color: white; background-color:#0000ff" id="color">Prix</th>
+                                            <th class="tm_width_1 tm_semi_bold" style="color: white; background-color:#0000ff" id="color">Quantité</th>
+                                            <th class="tm_width_2 tm_semi_bold tm_text_right" style="color: white; background-color:#0000ff" id="color">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($quote->items as $item)
+                                        <tr class="tm_gray_bg">
+                                            <td class="tm_width_7">
+                                                <p class="tm_m0 tm_f16 tm_primary_color">{{ $item->name }}</p>
+                                                {{ $item->additional['description'] ?? $item->product->description ?? '' }}
+                                            </td>
+                                            <td class="tm_width_2">{{ number_format($item->price, 0, ' ', '.') }} {{ $quote->devise }}</td>
+                                            <td class="tm_width_1">{{ $item->quantity }}</td>
+                                            <td class="tm_width_2 tm_text_right">{{ number_format($item->total + $item->tax_amount, 0, ' ', '.') }} {{ $quote->devise }}</td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- ================= TOTALS ================= -->
+                        <div class="tm_invoice_footer tm_mb15 tm_m0_md">
+                            <div class="tm_left_footer" style="margin-top:33px"></div>
+                            <div class="tm_right_footer">
+                                <table class="tm_mb15">
+                                    <tbody>
+                                        <tr>
+                                            <td class="tm_width_3 tm_primary_color tm_border_none tm_bold">TOTAL HT</td>
+                                            <td class="tm_width_3 tm_primary_color tm_text_right tm_border_none tm_bold">
+                                                {{ number_format($quote->sub_total, 0, ' ', '.') }} {{ $quote->devise }}
+                                            </td>
+                                        </tr>
+                                        @if($quote->haveTax)
+                                        <tr>
+                                            <td class="tm_width_3 tm_primary_color tm_border_none tm_pt0">
+                                                TVA 
+                                                @if ($quote->devise == "CFA") (18%)
+                                                @else (20%)
+                                                @endif
+                                            </td>
+                                            <td class="tm_width_3 tm_primary_color tm_text_right tm_border_none tm_pt0">
+                                                @if ($quote->devise == "CFA")
+                                                    {{ number_format($quote->sub_total * 0.18, 0, ' ', '.') }}
+                                                @else
+                                                    {{ number_format($quote->sub_total * 0.2, 0, ' ', '.') }}
+                                                @endif
+                                                {{ $quote->devise }}
+                                            </td>
+                                        </tr>
+                                        @endif
+                                        <tr>
+                                            <td id="color" style="background-color:#0000ff" class="tm_width_3 tm_border_top_0 tm_bold tm_f16 tm_white_color tm_radius_6_0_0_6">
+                                                Total TTC
+                                            </td>
+                                            <td id="color" style="background-color:#0000ff" class="tm_width_3 tm_border_top_0 tm_bold tm_f16 tm_primary_color tm_text_right tm_white_color tm_radius_0_6_6_0">
+                                                @if($quote->haveTax)
+                                                    @if ($quote->devise == "CFA")
+                                                        {{ number_format($quote->sub_total + ($quote->sub_total * 0.18), 0, ' ', '.') }}
+                                                    @else
+                                                        {{ number_format($quote->sub_total + ($quote->sub_total * 0.2), 0, ' ', '.') }}
+                                                    @endif
+                                                @else
+                                                    {{ number_format($quote->sub_total, 0, ' ', '.') }}
+                                                @endif
+                                                {{ $quote->devise }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="tm_invoice_footer tm_type1">
+                            <div class="tm_left_footer"></div>
+                        </div>
+                    </div>
 
-            .summary table.rtl {
-                width: 280px;
-            }
-
-            .summary table.rtl {
-                margin-right: 480px;
-            }
-
-            .summary table td {
-                padding: 5px 10px;
-            }
-
-            .summary table td:nth-child(2) {
-                text-align: center;
-            }
-
-            .summary table td:nth-child(3) {
-                text-align: right;
-            }
-        </style>
-    </head>
-
-    <body dir="{{ $locale }}">
-        <div class="page">
-            <!-- Header -->
-            <div class="page-header">
-                <b>@lang('admin::app.quotes.index.pdf.title')</b>
+                    <!-- ESPACE POUR ÉVITER QUE LE CONTENU NE CHEVAUCHE LES INFOS BANCAIRES -->
+                    <div style="height: 80px;"></div>
+                    
+                    <!-- ================= INFOS BANCAIRES (TOUJOURS EN BAS) ================= -->
+                    @if(core()->getConfigData('general.general.iban.iban'))
+                    <div class="bank-info-container">
+                        <div class="tm_note tm_font_style_normal tm_text_center" style="position: absolute; bottom: 0; left: 0; right: 0; width: 100%;">
+                            <hr class="tm_mb15">
+                            <p class="tm_mb2"> </p>
+                            <p class="tm_m0" style="font-size: 10px !important">
+                                Banque : {{ core()->getConfigData('general.general.nom_banque.nom_banque') }} </p>
+                            <p class="tm_m0" style="font-size: 10px !important"> Code SWIFT : {{ core()->getConfigData('general.general.swift_code.swift_code') }} </p>
+                            <p class="tm_m0" style="font-size: 10px !important"> IBAN : {{ core()->getConfigData('general.general.iban.iban') }}
+                            </p>
+                        </div>
+                    </div>
+                    @endif
+                </div>
             </div>
 
-            <div class="page-content">
-                <!-- Invoice Information -->
-                <table class="{{ app()->getLocale   () }}">
-                    <tbody>
-                        <tr>
-                            <td style="width: 50%; padding: 2px 18px;border:none;">
-                                <b>
-                                    @lang('admin::app.quotes.index.pdf.quote-id'): 
-                                </b>
+            <!-- ================= BUTTONS & COLOR PICKER ================= -->
+            <div class="tm_invoice_btns tm_hide_print">
+                <a href="javascript:window.print()" class="tm_invoice_btn tm_color1">
+                    <span class="tm_btn_icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512">
+                            <path d="M384 368h24a40.12 40.12 0 0040-40V168a40.12 40.12 0 00-40-40H104a40.12 40.12 0 00-40 40v160a40.12 40.12 0 0040 40h24" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32"></path>
+                            <rect x="128" y="240" width="256" height="208" rx="24.32" ry="24.32" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32"></rect>
+                            <path d="M384 128v-24a40.12 40.12 0 00-40-40H168a40.12 40.12 0 00-40 40v24" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32"></path>
+                            <circle cx="392" cy="184" r="24" fill="currentColor"></circle>
+                        </svg>
+                    </span>
+                    <span class="tm_btn_text">Imprimer</span>
+                </a>
+                <button id="tm_download_btn" class="tm_invoice_btn tm_color2">
+                    <span class="tm_btn_icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512">
+                            <path d="M320 336h76c55 0 100-21.21 100-75.6s-53-73.47-96-75.6C391.11 99.74 329 48 256 48c-69 0-113.44 45.79-128 91.2-60 5.7-112 35.88-112 98.4S70 336 136 336h56M192 400.1l64 63.9 64-63.9M256 224v224.03" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"></path>
+                        </svg>
+                    </span>
+                    <span class="tm_btn_text">Télécharger</span>
+                </button>
 
-                                <span>
-                                    #{{ $quote->id }}
-                                </span>
-                            </td>
-
-                            <td style="width: 50%; padding: 2px 18px;border:none;">
-                                <b>
-                                    @lang('admin::app.quotes.index.pdf.person'):
-                                </b>
-
-                                <span>
-                                    {{ $quote->person->name }}
-                                </span>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td style="width: 50%; padding: 2px 18px;border:none;">
-                                <b>
-                                    @lang('admin::app.quotes.index.pdf.sales-person'): 
-                                </b>
-
-                                <span>
-                                    {{ $quote->user->name }}
-                                </span>
-                            </td>
-
-                            <td style="width: 50%; padding: 2px 18px;border:none;">
-                                <b>
-                                    @lang('admin::app.quotes.index.pdf.subject'):
-                                </b>
-
-                                <span>
-                                    {{ $quote->subject }}
-                                </span>
-                            </td>
-                        </tr>
-                        
-                        <tr>
-                            <td style="width: 50%; padding: 2px 18px;border:none;">
-                                <b>
-                                    @lang('admin::app.quotes.index.pdf.date'):
-                                </b>
-
-                                <span>
-                                    {{ core()->formatDate($quote->created_at, 'd-m-Y') }}
-                                </span>
-                            </td>
-
-                            <td style="width: 50%; padding: 2px 18px;border:none;">
-                                <b>
-                                    @lang('admin::app.quotes.index.pdf.sales-person'):
-                                </b>
-
-                                <span>
-                                    {{ $quote->user->name }}
-                                </span>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td style="width: 50%; padding: 2px 18px;border:none;">
-                                <b>
-                                    @lang('admin::app.quotes.index.pdf.expired-at'):
-                                </b>
-
-                                <span>
-                                    {{ core()->formatDate($quote->expired_at, 'd-m-Y') }}
-                                </span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <!-- Billing & Shipping Address -->
-                <table class="{{ $locale }}">
-                    <thead>
-                        <tr>
-                            @if ($quote->billing_address)
-                                <th style="width: 50%;">
-                                    <b>
-                                        @lang('admin::app.quotes.index.pdf.billing-address')
-                                    </b>
-                                </th>
-                            @endif
-
-                            @if ($quote->shipping_address)
-                                <th style="width: 50%">
-                                    <b>
-                                        @lang('admin::app.quotes.index.pdf.shipping-address')
-                                    </b>
-                                </th>
-                            @endif
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <tr>
-                            @if ($quote->billing_address)
-                                <td style="width: 50%">
-                                    <div>{{ $quote->billing_address['address'] ?? '' }}</div>
-
-                                    <div>{{ $quote->billing_address['postcode'] ?? '' . ' ' .$quote->billing_address['city'] ?? '' }} </div>
-
-                                    <div>{{ $quote->billing_address['state'] ?? '' }}</div>
-
-                                    <div>{{ core()->country_name($quote->billing_address['country'] ?? '') }}</div>
-                                </td>
-                            @endif
-                            
-                            @if ($quote->shipping_address)
-                                <td style="width: 50%">
-                                    <div>{{ $quote->shipping_address['address'] ?? ''}}</div>
-
-                                    <div>{{ $quote->shipping_address['postcode'] ?? '' . ' ' .$quote->shipping_address['city'] ?? '' }} </div>
-
-                                    <div>{{ $quote->shipping_address['state'] ?? '' }}</div>
-
-                                    <div>{{ core()->country_name($quote->shipping_address['country'] ?? '') }}</div>
-                                </td>
-                            @endif
-                        </tr>
-                    </tbody>
-                </table>
-
-                <!-- Items -->
-                <div class="items">
-                    <table class="{{ app()->getLocale   () }}">
-                        <thead>
-                            <tr>
-                                <th>
-                                    @lang('admin::app.quotes.index.pdf.sku')
-                                </th>
-
-                                <th>
-                                    @lang('admin::app.quotes.index.pdf.product-name')
-                                </th>
-
-                                <th>
-                                    @lang('admin::app.quotes.index.pdf.price')
-                                </th>
-
-                                <th>
-                                    @lang('admin::app.quotes.index.pdf.quantity')
-                                </th>
-
-                                <th>
-                                    @lang('admin::app.quotes.index.pdf.amount')
-                                </th>
-
-                                <th>
-                                    @lang('admin::app.quotes.index.pdf.discount')
-                                </th>
-
-                                <th>
-                                    @lang('admin::app.quotes.index.pdf.tax')
-                                </th>
-
-                                <th>
-                                    @lang('admin::app.quotes.index.pdf.grand-total')
-                                </th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            @foreach ($quote->items as $item)
-                                <tr>
-                                    <td>{{ $item->sku }}</td>
-
-                                    <td>
-                                        {{ $item->name }}
-                                    </td>
-
-                                    <td>{!! core()->formatBasePrice($item->price, true) !!}</td>
-
-                                    <td class="text-center">{{ $item->quantity }}</td>
-
-                                    <td class="text-center">{!! core()->formatBasePrice($item->total, true) !!}</td>
-
-                                    <td class="text-center">{!! core()->formatBasePrice($item->discount_amount, true) !!}</td>
-
-                                    <td class="text-center">{!! core()->formatBasePrice($item->tax_amount, true) !!}</td>
-                                    
-                                    <td class="text-center">{!! core()->formatBasePrice($item->total + $item->tax_amount - $item->discount_amount, true) !!}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-
-               <!-- Summary Table -->
-                <div class="summary">
-                    <table class="{{ app()->getLocale   () }}">
-                        <tbody>
-                            <tr>
-                                <td>@lang('admin::app.quotes.index.pdf.sub-total')</td>
-                                <td>-</td>
-                                <td>{!! core()->formatBasePrice($quote->sub_total, true) !!}</td>
-                            </tr>
-        
-                            <tr>
-                                <td>@lang('admin::app.quotes.index.pdf.tax')</td>
-                                <td>-</td>
-                                <td>{!! core()->formatBasePrice($quote->tax_amount, true) !!}</td>
-                            </tr>
-        
-                            <tr>
-                                <td>@lang('admin::app.quotes.index.pdf.discount')</td>
-                                <td>-</td>
-                                <td>{!! core()->formatBasePrice($quote->discount_amount, true) !!}</td>
-                            </tr>
-        
-                            <tr>
-                                <td>@lang('admin::app.quotes.index.pdf.adjustment')</td>
-                                <td>-</td>
-                                <td>{!! core()->formatBasePrice($quote->adjustment_amount, true) !!}</td>
-                            </tr>
-        
-                            <tr>
-                                <td><strong>@lang('admin::app.quotes.index.pdf.grand-total')</strong></td>
-                                <td><strong>-</strong></td>
-                                <td><strong>{!! core()->formatBasePrice($quote->grand_total, true) !!}</strong></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <!-- ================= COLOR PICKER ================= -->
+               <!-- <ul class="color-list">
+                    <li class="color-item selected" style="background-color:#0000ff" onclick="changeColor('#0000ff', this)"></li>
+                    <li class="color-item" style="background-color: red;" onclick="changeColor('red', this)"></li>
+                    <li class="color-item" style="background-color: green;" onclick="changeColor('green', this)"></li>
+                    <li class="color-item" style="background-color: blue;" onclick="changeColor('blue', this)"></li>
+                    <li class="color-item" style="background-color: orange;" onclick="changeColor('orange', this)"></li>
+                    <li class="color-item" style="background-color: purple;" onclick="changeColor('purple', this)"></li>
+                    <li class="color-item" style="background-color: brown;" onclick="changeColor('brown', this)"></li>
+                </ul> -->
             </div>
         </div>
-    </body>
+    </div>
+
+    <script>
+        function changeColor(color, element) {
+            // Change the background color of all elements with id="color"
+            var items = document.querySelectorAll('#color');
+            items.forEach(function(item) {
+                item.style.backgroundColor = color;
+            });
+
+            // Remove the 'selected' class from all items
+            var items = document.querySelectorAll('.color-item');
+            items.forEach(function(item) {
+                item.classList.remove('selected');
+            });
+
+            // Add the 'selected' class to the clicked item
+            element.classList.add('selected');
+        }
+    </script>
+
+    <script>
+        (function ($) {
+            'use strict';
+
+            $('#tm_download_btn').on('click', function () {
+                var downloadSection = $('#tm_download_section');
+                var a4Width = 595.28; // Largeur A4 en points
+                var a4Height = 841.89; // Hauteur A4 en points
+                var canvasImageWidth = downloadSection.width();
+                var canvasImageHeight = downloadSection.height();
+
+                html2canvas(downloadSection[0], { 
+                    allowTaint: true, 
+                    useCORS: true,
+                    scale: 2,
+                    backgroundColor: '#ffffff'
+                })
+                .then(function (canvas) {
+                    var imgData = canvas.toDataURL('image/png', 1.0);
+                    var pdf = new jspdf.jsPDF('p', 'pt', 'a4');
+
+                    // Calculer le rapport de conversion
+                    var imgWidth = a4Width;
+                    var imgHeight = canvasImageHeight * (a4Width / canvasImageWidth);
+
+                    var heightLeft = imgHeight;
+                    var position = 0;
+
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= a4Height;
+
+                    while (heightLeft > 0) {
+                        position = heightLeft - imgHeight;
+                        pdf.addPage();
+                        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                        heightLeft -= a4Height;
+                    }
+
+                    pdf.save('{{ $quote->type_ }}_{{ $quote->id }}.pdf');
+                })
+                .catch(function (error) {
+                    console.error('Erreur lors de la capture :', error);
+                });
+            });
+
+        })(jQuery);
+    </script>
+</body>
 </html>

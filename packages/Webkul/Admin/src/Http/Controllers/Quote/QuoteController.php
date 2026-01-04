@@ -186,10 +186,15 @@ class QuoteController extends Controller
     /**
      * Print and download the for the specified resource.
      */
-    public function print($id): Response|StreamedResponse
+    public function print($id)
     {
+        
+        set_time_limit(75); 
+        // 120 secondes
+        // Augmenter la mémoire
+        ini_set('memory_limit', '512M');
         $quote = $this->quoteRepository->findOrFail($id);
-
+        return view('admin::quotes.pdf', compact('quote'));
         return $this->downloadPDF(
             view('admin::quotes.pdf', compact('quote'))->render(),
             'Quote_'.$quote->subject.'_'.$quote->created_at->format('d-m-Y')

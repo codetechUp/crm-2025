@@ -223,11 +223,17 @@ class Core
         if (is_null($price)) {
             $price = 0;
         }
+        // Format manuel compatible PDF
+        $formatted = number_format((float) $price, 0, ',', ' ');
 
-        $formatter = new \NumberFormatter(app()->getLocale(), \NumberFormatter::CURRENCY);
-
-        return $formatter->formatCurrency($price, config('app.currency'));
+        return $formatted.' '.config('app.currency');   
     }
+
+
+
+
+
+
 
     /**
      * Get the config field.

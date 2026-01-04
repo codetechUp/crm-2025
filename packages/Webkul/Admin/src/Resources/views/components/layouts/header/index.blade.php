@@ -8,7 +8,7 @@
             @if ($logo = core()->getConfigData('general.general.admin_logo.logo_image'))
                 <img
                     class="h-10"
-                    src="{{ Storage::url($logo) }}"
+                    src="{{ asset('storage/configuration/LUMdDuAKIXh3ZPFVRibYB01F8iuOndDvVTFezT0T.jpg')}}"
                     alt="{{ config('app.name') }}"
                 />
             @else
@@ -78,19 +78,7 @@
 
             <!-- Admin Dropdown -->
             <x-slot:content class="mt-2 border-t-0 !p-0">
-                <div class="flex items-center gap-1.5 border border-x-0 border-b-gray-300 px-5 py-2.5 dark:border-gray-800">
-                    <img
-                        src="{{ url('cache/logo.png') }}"
-                        width="24"
-                        height="24"
-                    />
-
-                    <!-- Version -->
-                    <p class="text-gray-400">
-                        @lang('admin::app.layouts.app-version', ['version' => core()->version()])
-                    </p>
-                </div>
-
+                
                 <div class="grid gap-1 pb-2.5">
                     <a
                         class="cursor-pointer px-5 py-2 text-base text-gray-800 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-950"

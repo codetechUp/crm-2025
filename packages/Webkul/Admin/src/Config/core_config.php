@@ -42,7 +42,137 @@ return [
                 'validation'    => 'mimes:bmp,jpeg,jpg,png,webp,svg',
             ],
         ],
+    ],
+
+    /**
+     * Informations commerciales
+     */
+    [
+        'key'    => 'general.general.ninea',
+        'name'   => 'Ninea',
+        'info'   => 'Numéro d\'identification nationale des entreprises et associations',
+        'sort'   => 3,
+        'fields' => [
+            [
+                'name'          => 'ninea',
+                'title'         => 'Numéro NINEA',
+                'type'          => 'text',
+                'default'       => '009103706',
+                'validation'    => 'max:50',
+            ],
+        ],
     ], [
+        'key'    => 'general.general.registre_commerce',
+        'name'   => 'Registre de commerce',
+        'info'   => 'Numéro d\'immatriculation au registre de commerce',
+        'sort'   => 4,
+        'fields' => [
+            [
+                'name'          => 'registre_commerce',
+                'title'         => 'Numéro de registre',
+                'type'          => 'text',
+                'default'       => 'SN DKR-2022-B-485',
+                'validation'    => 'max:100',
+            ],
+        ],
+    ],
+
+    /**
+     * Informations bancaires
+     */
+    [
+        'key'    => 'general.general.swift_code',
+        'name'   => 'Code SWIFT/BIC',
+        'info'   => 'Code d\'identification bancaire internationale',
+        'sort'   => 5,
+        'fields' => [
+            [
+                'name'          => 'swift_code',
+                'title'         => 'Code SWIFT/BIC',
+                'type'          => 'text',
+                'validation'    => 'max:11',
+                'info'          => 'Exemple: SGALSNDA',
+            ],
+        ],
+    ], [
+        'key'    => 'general.general.iban',
+        'name'   => 'IBAN',
+        'info'   => 'International Bank Account Number',
+        'sort'   => 6,
+        'fields' => [
+            [
+                'name'          => 'iban',
+                'title'         => 'Numéro IBAN',
+                'type'          => 'text',
+                'default'       => 'SN012 01312 036 203828401 55',
+                'validation'    => 'max:34',
+                'info'          => 'Exemple: SN012 01312 036 203828401 55',
+            ],
+        ],
+    ], [
+        'key'    => 'general.general.rib',
+        'name'   => 'RIB',
+        'info'   => 'Relevé d\'Identité Bancaire',
+        'sort'   => 7,
+        'fields' => [
+            [
+                'name'          => 'rib',
+                'title'         => 'Numéro RIB',
+                'type'          => 'text',
+                'validation'    => 'max:27',
+                'info'          => 'Exemple: 01234 56789 12345678901 12',
+            ],
+        ],
+    ], [
+        'key'    => 'general.general.nom_banque',
+        'name'   => 'Nom de la banque',
+        'info'   => 'Nom de l\'établissement bancaire',
+        'sort'   => 8,
+        'fields' => [
+            [
+                'name'          => 'nom_banque',
+                'title'         => 'Nom de la banque',
+                'type'          => 'text',
+                'validation'    => 'max:100',
+                'default'       => 'Société Générale',
+                'info'          => 'Exemple: Société Générale Sénégal',
+            ],
+        ],
+    ], [
+        'key'    => 'general.general.numero_compte',
+        'name'   => 'Numéro de compte bancaire',
+        'info'   => 'Numéro de compte bancaire',
+        'sort'   => 9,
+        'fields' => [
+            [
+                'name'          => 'numero_compte',
+                'title'         => 'Numéro de compte',
+                'type'          => 'text',
+                'validation'    => 'max:50',
+                'info'          => 'Exemple: 20382840155',
+            ],
+        ],
+    ], [
+        'key'    => 'general.general.adresse_siege',
+        'name'   => 'Adresse du siège social',
+        'info'   => 'Adresse complète du siège social',
+        'sort'   => 10,
+        'fields' => [
+            [
+                'name'          => 'adresse_siege',
+                'title'         => 'Adresse complète',
+                'type'          => 'textarea',
+                'default'       => 'HLM 5 Villa N°1744, Dakar, Sénégal',
+                'validation'    => 'max:255',
+                'info'          => 'Adresse complète avec code postal et ville',
+            ],
+        ],
+    ],
+
+    /**
+     * Paramètres généraux (suite)
+     */
+    [
         'key'    => 'general.settings',
         'name'   => 'admin::app.configuration.index.general.settings.title',
         'info'   => 'admin::app.configuration.index.general.settings.info',

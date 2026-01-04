@@ -58,10 +58,10 @@
         href="{{ url('cache/logo/bagisto.png') }}"
     >
 
-    @if ($favicon = core()->getConfigData('general.design.admin_logo.favicon'))
+    @if ($favicon = core()->getConfigData('general.general.admin_logo.logo_image'))
         <link
             type="image/x-icon"
-            href="{{ Storage::url($favicon) }}"
+            href="{{ asset('storage'.$favicon) }}"
             rel="shortcut icon"
             sizes="16x16"
         >
