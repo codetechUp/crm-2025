@@ -51,7 +51,7 @@
     @if ($favicon = core()->getConfigData('general.general.admin_logo.logo_image'))
         <link
             type="image/x-icon"
-            href="{{ asset('storage'.$favicon) }}"
+            href="{{ asset('storage/configuration/LUMdDuAKIXh3ZPFVRibYB01F8iuOndDvVTFezT0T.jpg')}}"
             rel="shortcut icon"
             sizes="16x16"
         >
