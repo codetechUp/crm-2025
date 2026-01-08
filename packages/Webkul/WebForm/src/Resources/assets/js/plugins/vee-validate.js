@@ -52,7 +52,7 @@ export default {
          * someone wants to customize it, they can override this rule.
          */
         defineRule("phone", (value) => {
-            if (! value || ! value.length) {
+            if (!value || !value.length) {
                 return true;
             }
 
@@ -62,7 +62,7 @@ export default {
 
             return true;
         });
-                
+
         defineRule("address", (value) => {
             if (!value || !value.length) {
                 return true;
@@ -131,7 +131,7 @@ export default {
                         phone: "يجب أن يكون هذا {field} رقم هاتف صالحًا",
                     },
                 },
-        
+
                 bn: {
                     ...bn,
                     messages: {
@@ -139,7 +139,7 @@ export default {
                         phone: "এই {field} একটি বৈধ ফোন নম্বর হতে হবে",
                     },
                 },
-        
+
                 de: {
                     ...de,
                     messages: {
@@ -155,7 +155,7 @@ export default {
                         phone: "This {field} must be a valid phone number",
                     },
                 },
-        
+
                 es: {
                     ...es,
                     messages: {
@@ -163,7 +163,7 @@ export default {
                         phone: "Este {field} debe ser un número de teléfono válido.",
                     },
                 },
-        
+
                 fa: {
                     ...fa,
                     messages: {
@@ -171,15 +171,18 @@ export default {
                         phone: "این {field} باید یک شماره تلفن معتبر باشد.",
                     },
                 },
-        
+
                 fr: {
                     ...fr,
                     messages: {
                         ...fr.messages,
                         phone: "Ce {field} doit être un numéro de téléphone valide.",
+                        address: "Ce {field} n'est pas une adresse valide.",
+                        decimal: "Ce {field} doit être un nombre valide.",
+                        required_if: "Ce {field} est obligatoire.",
                     },
                 },
-        
+
                 he: {
                     ...he,
                     messages: {
@@ -187,7 +190,7 @@ export default {
                         phone: "זה {field} חייב להיות מספר טלפון תקין.",
                     },
                 },
-        
+
                 hi_IN: {
                     ...hi_IN,
                     messages: {
@@ -195,7 +198,7 @@ export default {
                         phone: "यह {field} कोई मान्य फ़ोन नंबर होना चाहिए।",
                     },
                 },
-        
+
                 it: {
                     ...it,
                     messages: {
@@ -203,7 +206,7 @@ export default {
                         phone: "Questo {field} deve essere un numero di telefono valido.",
                     },
                 },
-        
+
                 ja: {
                     ...ja,
                     messages: {
@@ -211,7 +214,7 @@ export default {
                         phone: "この{field}は有効な電話番号である必要があります。",
                     },
                 },
-        
+
                 nl: {
                     ...nl,
                     messages: {
@@ -219,7 +222,7 @@ export default {
                         phone: "Dit {field} moet een geldig telefoonnummer zijn.",
                     },
                 },
-        
+
                 pl: {
                     ...pl,
                     messages: {
@@ -227,7 +230,7 @@ export default {
                         phone: "To {field} musi być prawidłowy numer telefonu.",
                     },
                 },
-        
+
                 pt_BR: {
                     ...pt_BR,
                     messages: {
@@ -235,7 +238,7 @@ export default {
                         phone: "Este {field} deve ser um número de telefone válido.",
                     },
                 },
-        
+
                 ru: {
                     ...ru,
                     messages: {
@@ -243,7 +246,7 @@ export default {
                         phone: "Это {field} должно быть действительным номером телефона.",
                     },
                 },
-        
+
                 sin: {
                     ...sin,
                     messages: {
@@ -251,7 +254,7 @@ export default {
                         phone: "මෙම {field} වටේ වලංගු දුරකතන අංකය විය යුතුයි.",
                     },
                 },
-        
+
                 tr: {
                     ...tr,
                     messages: {
@@ -259,7 +262,7 @@ export default {
                         phone: "Bu {field} geçerli bir telefon numarası olmalıdır.",
                     },
                 },
-        
+
                 uk: {
                     ...uk,
                     messages: {
@@ -267,7 +270,7 @@ export default {
                         phone: "Це {field} повинно бути дійсним номером телефону.",
                     },
                 },
-        
+
                 zh_CN: {
                     ...zh_CN,
                     messages: {
