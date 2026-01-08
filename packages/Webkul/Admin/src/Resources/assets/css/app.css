@@ -10,9 +10,10 @@
     font-weight: normal;
     font-style: normal;
     font-display: block;
-  }
+}
 
-  [class^="icon-"], [class*=" icon-"] {
+[class^="icon-"],
+[class*=" icon-"] {
     /* use !important to prevent issues with browser extensions that change fonts */
     font-family: 'icomoon' !important;
     speak: never;
@@ -25,13 +26,13 @@
     /* Better Font Rendering =========== */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-  }
+}
 
 @layer components {
     .icon-image:before {
         content: "\e956";
     }
-      
+
     .icon-bookmark:before {
         content: "\e92c";
     }
@@ -123,7 +124,7 @@
     .icon-settings-roles:before {
         content: "\e940";
     }
-    
+
     .icon-settings-sources:before {
         content: "\e941";
     }
@@ -351,9 +352,9 @@
     .icon-cross-large:before {
         content: "\e91c";
     }
- 
+
     /* OU si vous voulez un emoji/autre symbole */
-   
+
     .icon-left-arrow:before {
         content: "\e91d";
     }
@@ -381,36 +382,38 @@
     .icon-add-2:before {
         content: "\e923";
     }
-.icon-convert::before {
-    content: "🔄";
-    font-family: inherit;
-    display: inline-block;
-    margin-right: 6px;
-    font-size: 1.1em;
-    vertical-align: middle;
-    line-height: 1;
-    transition: transform 0.3s ease;
-}
 
-/* Animation au survol */
-.icon-loop:hover::before {
-    transform: rotate(90deg);
-}
+    .icon-convert::before {
+        content: "🔄";
+        font-family: inherit;
+        display: inline-block;
+        margin-right: 6px;
+        font-size: 1.1em;
+        vertical-align: middle;
+        line-height: 1;
+        transition: transform 0.3s ease;
+    }
 
-/* Version sans texte (juste l'icône) */
-.icon-loop.alone::before {
-    margin-right: 0;
-    font-size: 1.3em;
-}
+    /* Animation au survol */
+    .icon-loop:hover::before {
+        transform: rotate(90deg);
+    }
 
-/* Taille personnalisée */
-.icon-loop.small::before {
-    font-size: 0.9em;
-}
+    /* Version sans texte (juste l'icône) */
+    .icon-loop.alone::before {
+        margin-right: 0;
+        font-size: 1.3em;
+    }
 
-.icon-loop.large::before {
-    font-size: 1.5em;
-}
+    /* Taille personnalisée */
+    .icon-loop.small::before {
+        font-size: 0.9em;
+    }
+
+    .icon-loop.large::before {
+        font-size: 1.5em;
+    }
+
     .label-active {
         @apply max-w-max rounded-md bg-emerald-200 px-3 py-1.5 text-xs font-medium text-emerald-900;
     }
@@ -486,7 +489,7 @@
     }
 
     .dark\:bg-gray-400:is(.dark *) {
-       --tw-bg-opacity: 1 !important;
+        --tw-bg-opacity: 1 !important;
         background-color: #1f2937 !important;
         border: #111827 solid !important;
         color: #e5e7eb !important;
@@ -503,32 +506,26 @@
         animation-iteration-count: infinite;
         animation-name: skeleton;
         animation-timing-function: linear;
-        background: linear-gradient(
-            to right,
-            #f6f6f6 8%,
-            #f0f0f0 18%,
-            #f6f6f6 33%
-        );
+        background: linear-gradient(to right,
+                #f6f6f6 8%,
+                #f0f0f0 18%,
+                #f6f6f6 33%);
         background-size: 1250px 100%;
     }
 
     .light-shimmer-bg {
-        background: linear-gradient(
-            to right,
-            #fafafa 8%,
-            #f5f5f5 18%,
-            #fafafa 33%
-        );
+        background: linear-gradient(to right,
+                #fafafa 8%,
+                #f5f5f5 18%,
+                #fafafa 33%);
         background-size: 1250px 100%;
     }
 
     .dark .shimmer {
-        background: linear-gradient(
-            to right,
-            #1f2937 8%,
-            #1a2232 18%,
-            #1f2937 33%
-        );
+        background: linear-gradient(to right,
+                #1f2937 8%,
+                #1a2232 18%,
+                #1f2937 33%);
     }
 
     .primary-button {
@@ -588,7 +585,7 @@
     }
 
     html.dark [class^="icon-"],
-    html.dark [class*=" icon-"]{
+    html.dark [class*=" icon-"] {
         color: #d1d5db;
     }
 
@@ -633,7 +630,7 @@
         background-position-y: 50%;
     }
 
-    .dark .custom-select{
+    .dark .custom-select {
         background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
     }
 

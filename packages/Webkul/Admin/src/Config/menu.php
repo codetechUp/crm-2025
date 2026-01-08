@@ -9,7 +9,7 @@ return [
         'name'       => 'admin::app.layouts.dashboard',
         'route'      => 'admin.dashboard.index',
         'sort'       => 1,
-        'icon-class' => 'icon-dashboard',
+        'icon-class' => 'icon-stats-up',
     ],
 
     /**
@@ -20,7 +20,7 @@ return [
         'name'       => 'admin::app.layouts.leads',
         'route'      => 'admin.leads.index',
         'sort'       => 2,
-        'icon-class' => 'icon-leads',
+        'icon-class' => 'icon-user',
     ],
 
     /**
@@ -31,7 +31,7 @@ return [
         'name'       => 'admin::app.layouts.quotes',
         'route'      => 'admin.quotes.index',
         'sort'       => 3,
-        'icon-class' => 'icon-quote',
+        'icon-class' => 'icon-note',
     ],
 
     /**
@@ -43,7 +43,7 @@ return [
         'route'      => 'admin.mail.index',
         'params'     => ['route' => 'inbox'],
         'sort'       => 4,
-        'icon-class' => 'icon-mail',
+        'icon-class' => 'icon-message',
     ], [
         'key'        => 'mail.inbox',
         'name'       => 'admin::app.layouts.mail.inbox',
@@ -96,7 +96,7 @@ return [
         'name'       => 'admin::app.layouts.activities',
         'route'      => 'admin.activities.index',
         'sort'       => 5,
-        'icon-class' => 'icon-activity',
+        'icon-class' => 'icon-tick',
     ],
 
     /**
@@ -107,7 +107,7 @@ return [
         'name'       => 'admin::app.layouts.contacts',
         'route'      => 'admin.contacts.persons.index',
         'sort'       => 6,
-        'icon-class' => 'icon-contact',
+        'icon-class' => 'icon-organization',
     ], [
         'key'        => 'contacts.persons',
         'name'       => 'admin::app.layouts.persons',
@@ -130,7 +130,7 @@ return [
         'name'       => 'admin::app.layouts.products',
         'route'      => 'admin.products.index',
         'sort'       => 7,
-        'icon-class' => 'icon-product',
+        'icon-class' => 'icon-tag',
     ],
 
     /**
@@ -141,7 +141,7 @@ return [
         'name'       => 'admin::app.layouts.settings',
         'route'      => 'admin.settings.index',
         'sort'       => 8,
-        'icon-class' => 'icon-setting',
+        'icon-class' => 'icon-settings-flow',
     ], [
         'key'        => 'settings.user',
         'name'       => 'admin::app.layouts.user',
@@ -300,13 +300,13 @@ return [
         'name'       => 'Factures',
         'route'      => 'admin.factures.index',
         'sort'       => 9,
-        'icon-class' => 'icon-settings-webforms',
+        'icon-class' => 'icon-file',
     ],
     [
-        'key' => 'finance',
+            'key' => 'finance',
             'name' => 'Dépenses',
             'route' => 'admin.depenses.index',
-            'icon-class' => 'icon-settings-warehouse',
+            'icon-class' => 'icon-dollar',
             'sort' => 10,
     ],
 

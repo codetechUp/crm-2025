@@ -5,6 +5,7 @@ namespace Webkul\Admin\Helpers;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Webkul\Admin\Helpers\Reporting\Activity;
+use Webkul\Admin\Helpers\Reporting\Depense;
 use Webkul\Admin\Helpers\Reporting\Lead;
 use Webkul\Admin\Helpers\Reporting\Organization;
 use Webkul\Admin\Helpers\Reporting\Person;
@@ -25,6 +26,7 @@ class Dashboard
         protected Person $personReporting,
         protected Organization $organizationReporting,
         protected Quote $quoteReporting,
+        protected Depense $depenseReporting,
     ) {}
 
     /**
@@ -110,6 +112,22 @@ class Dashboard
     public function getTopPersons(): Collection
     {
         return $this->personReporting->getTopCustomersByRevenue(5);
+    }
+
+    /**
+     * Returns monthly expense result statistics.
+     */
+    public function getMonthlyExpenseResult(): array
+    {
+        return $this->depenseReporting->getMonthlyExpenseResult();
+    }
+
+    /**
+     * Returns real-time treasury tracking statistics.
+     */
+    public function getTreasuryTracking(): array
+    {
+        return $this->depenseReporting->getTreasuryTracking();
     }
 
     /**

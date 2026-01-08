@@ -65,6 +65,12 @@
         {!! view_render_event('admin.dashboard.index.content.right.before') !!}
 
         <div class="flex w-[378px] max-w-full flex-col gap-4 max-sm:w-full">
+            <!-- Monthly Expense Result -->
+            @include('admin::dashboard.index.monthly-expense-result')
+
+            <!-- Treasury Tracking -->
+            @include('admin::dashboard.index.treasury-tracking')
+
             <!-- Revenue by Types -->
             @include('admin::dashboard.index.open-leads-by-states')
 

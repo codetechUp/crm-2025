@@ -519,6 +519,53 @@ return [
         'sort'  => 4,
     ],
     [
+        'key'   => 'factures',
+        'name'  => 'Factures',
+        'route' => 'admin.factures.index',
+        'sort'  => 9,
+    ], [
+        'key'   => 'factures.create',
+        'name'  => 'admin::app.acl.create',
+        'route' => ['admin.factures.create', 'admin.factures.store'],
+        'sort'  => 1,
+    ], [
+        'key'   => 'factures.edit',
+        'name'  => 'admin::app.acl.edit',
+        'route' => ['admin.factures.edit', 'admin.factures.update'],
+        'sort'  => 2,
+    ], [
+        'key'   => 'factures.print',
+        'name'  => 'admin::app.acl.print',
+        'route' => 'admin.factures.print',
+        'sort'  => 3,
+    ], [
+        'key'   => 'factures.delete',
+        'name'  => 'admin::app.acl.delete',
+        'route' => ['admin.factures.delete', 'admin.factures.mass_delete'],
+        'sort'  => 4,
+    ],
+    [
+        'key'   => 'depenses',
+        'name'  => 'Dépenses',
+        'route' => 'admin.depenses.index',
+        'sort'  => 10,
+    ], [
+        'key'   => 'depenses.create',
+        'name'  => 'admin::app.acl.create',
+        'route' => ['admin.depenses.create', 'admin.depenses.store'],
+        'sort'  => 1,
+    ], [
+        'key'   => 'depenses.edit',
+        'name'  => 'admin::app.acl.edit',
+        'route' => ['admin.depenses.edit', 'admin.depenses.update'],
+        'sort'  => 2,
+    ], [
+        'key'   => 'depenses.delete',
+        'name'  => 'admin::app.acl.delete',
+        'route' => ['admin.depenses.delete', 'admin.depenses.mass_delete'],
+        'sort'  => 3,
+    ],
+    [
         'key'   => 'configuration',
         'name'  => 'admin::app.acl.configuration',
         'route' => 'admin.configuration.index',

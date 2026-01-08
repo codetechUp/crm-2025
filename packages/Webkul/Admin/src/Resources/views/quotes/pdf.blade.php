@@ -173,21 +173,19 @@
                                                 {{ number_format($quote->sub_total, 0, ' ', '.') }} {{ $quote->devise }}
                                             </td>
                                         </tr>
-                                        @if($quote->haveTax)
+                                       
+                                        @if(core()->getConfigData('general.general.tva_settings.tva_18'))
                                         <tr>
                                             <td class="tm_width_3 tm_primary_color tm_border_none tm_pt0">
                                                 TVA 
-                                                @if ($quote->devise == "CFA") (18%)
-                                                @else (20%)
-                                                @endif
+                                                (18%)
+                                            
                                             </td>
                                             <td class="tm_width_3 tm_primary_color tm_text_right tm_border_none tm_pt0">
-                                                @if ($quote->devise == "CFA")
+                                                
                                                     {{ number_format($quote->sub_total * 0.18, 0, ' ', '.') }}
-                                                @else
-                                                    {{ number_format($quote->sub_total * 0.2, 0, ' ', '.') }}
-                                                @endif
-                                                {{ $quote->devise }}
+                                               
+                                                
                                             </td>
                                         </tr>
                                         @endif
@@ -196,12 +194,10 @@
                                                 Total TTC
                                             </td>
                                             <td id="color" style="background-color:#0000ff" class="tm_width_3 tm_border_top_0 tm_bold tm_f16 tm_primary_color tm_text_right tm_white_color tm_radius_0_6_6_0">
-                                                @if($quote->haveTax)
-                                                    @if ($quote->devise == "CFA")
+                                                @if(core()->getConfigData('general.general.tva_settings.tva_18'))
+                                                   
                                                         {{ number_format($quote->sub_total + ($quote->sub_total * 0.18), 0, ' ', '.') }}
-                                                    @else
-                                                        {{ number_format($quote->sub_total + ($quote->sub_total * 0.2), 0, ' ', '.') }}
-                                                    @endif
+                                                   
                                                 @else
                                                     {{ number_format($quote->sub_total, 0, ' ', '.') }}
                                                 @endif
