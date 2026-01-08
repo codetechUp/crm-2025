@@ -78,13 +78,32 @@ return [
     ],
 
     /**
+     * Paramètres TVA
+     */
+    [
+        'key'    => 'general.general.tva_settings',
+        'name'   => 'Paramètres TVA',
+        'info'   => 'Configuration de la Taxe sur la Valeur Ajoutée',
+        'sort'   => 5,
+        'fields' => [
+            [
+                'name'          => 'tva_18',
+                'title'         => 'TVA 18%',
+                'type'          => 'boolean',
+                'default'       => false,
+                'info'          => 'Activer la TVA à 18% sur les produits et services',
+            ],
+        ],
+    ],
+
+    /**
      * Informations bancaires
      */
     [
         'key'    => 'general.general.swift_code',
         'name'   => 'Code SWIFT/BIC',
         'info'   => 'Code d\'identification bancaire internationale',
-        'sort'   => 5,
+        'sort'   => 6,
         'fields' => [
             [
                 'name'          => 'swift_code',
@@ -98,7 +117,7 @@ return [
         'key'    => 'general.general.iban',
         'name'   => 'IBAN',
         'info'   => 'International Bank Account Number',
-        'sort'   => 6,
+        'sort'   => 7,
         'fields' => [
             [
                 'name'          => 'iban',
@@ -113,7 +132,7 @@ return [
         'key'    => 'general.general.rib',
         'name'   => 'RIB',
         'info'   => 'Relevé d\'Identité Bancaire',
-        'sort'   => 7,
+        'sort'   => 8,
         'fields' => [
             [
                 'name'          => 'rib',
@@ -127,7 +146,7 @@ return [
         'key'    => 'general.general.nom_banque',
         'name'   => 'Nom de la banque',
         'info'   => 'Nom de l\'établissement bancaire',
-        'sort'   => 8,
+        'sort'   => 9,
         'fields' => [
             [
                 'name'          => 'nom_banque',
@@ -142,7 +161,7 @@ return [
         'key'    => 'general.general.numero_compte',
         'name'   => 'Numéro de compte bancaire',
         'info'   => 'Numéro de compte bancaire',
-        'sort'   => 9,
+        'sort'   => 10,
         'fields' => [
             [
                 'name'          => 'numero_compte',
@@ -156,7 +175,7 @@ return [
         'key'    => 'general.general.adresse_siege',
         'name'   => 'Adresse du siège social',
         'info'   => 'Adresse complète du siège social',
-        'sort'   => 10,
+        'sort'   => 11,
         'fields' => [
             [
                 'name'          => 'adresse_siege',
