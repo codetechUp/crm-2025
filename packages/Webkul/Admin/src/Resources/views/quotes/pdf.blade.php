@@ -3,291 +3,367 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $quote->type_ }} N° {{ $quote->id }}</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
-    <link rel="stylesheet" href="https://crm.webmasteragency.fr/assets/css/style.css">
     
     <style>
-        .color-list {
-            display: inline-block;
-            list-style-type: none;
-            padding: 0;
+        :root {
+            --primary-color: #000000;
+            --accent-color: #f3f3f3;
+            --text-color: #333333;
+            --light-text: #666666;
+            --border-color: #e0e0e0;
         }
 
-        .color-item {
-            width: 30px;
-            height: 30px;
-            margin: 5px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid transparent;
-        }
-
-        .color-item.selected {
-            border: 2px solid black;
-        }
-        
-        /* Styles pour assurer la compatibilité */
         body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: var(--text-color);
+            background-color: #f5f5f5;
             margin: 0;
             padding: 20px;
-            background-color: #f5f5f5;
+            font-size: 14px;
+            line-height: 1.5;
         }
-        
-        /* Styles spécifiques pour l'impression et le PDF */
+
         .tm_container {
+            max-width: 800px; /* A4 width approx */
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
             position: relative;
-            min-height: 100vh;
         }
-        
+
         .tm_invoice_wrap {
+            padding: 50px;
+            min-height: 1123px; /* A4 height */
+            box-sizing: border-box;
             position: relative;
-            min-height: 1123px; /* Hauteur approximative A4 (841.89pt ≈ 1123px) */
+        }
+
+        /* Helpers */
+        .text-right { text-align: right; }
+        .text-bold { font-weight: bold; }
+        .text-uppercase { text-transform: uppercase; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1.5rem; }
+        
+        /* Layout */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .logo img {
+            max-height: 80px;
+            max-width: 200px;
+        }
+
+        .company-info {
+            text-align: right;
+            font-size: 12px;
+            color: var(--light-text);
         }
         
-        .bank-info-container {
-            position: absolute;
-            bottom: 20px;
-            left: 0;
-            right: 0;
+        .company-info strong {
+            color: var(--text-color);
+            font-size: 14px;
+        }
+
+        .client-meta-wrapper {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+
+        .client-info, .meta-info {
+            width: 45%;
+        }
+
+        .meta-info {
+            text-align: right;
+        }
+
+        .doc-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .info-label {
+            color: var(--light-text);
+            font-size: 12px;
+            margin-bottom: 2px;
+        }
+
+        .info-value {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        /* Table */
+        .invoice-table {
             width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        .invoice-table th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
         }
         
+        .invoice-table th.text-right { text-align: right; }
+
+        .invoice-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .invoice-table tr:last-child td {
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        /* Totals */
+        .totals-section {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .totals-table {
+            width: 300px;
+            border-collapse: collapse;
+        }
+
+        .totals-table td {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .totals-table tr:last-child td {
+            border-bottom: none;
+            padding-top: 15px;
+        }
+
+        .total-label {
+            color: var(--light-text);
+        }
+
+        .total-value {
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .grand-total {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            font-size: 11px;
+            color: var(--light-text);
+            text-align: center;
+        }
+
+        /* Controls */
+        .controls {
+            position: absolute;
+            top: 20px;
+            right: -150px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+        
+        .btn:hover { background: #555; }
+
         @media print {
-            .tm_invoice_btns,
-            .color-list {
-                display: none !important;
-            }
-            
-            body {
-                padding: 0;
-                margin: 0;
-            }
-            
-            .tm_container {
-                height: 100vh;
-            }
-            
-            .tm_invoice_wrap {
-                min-height: 100vh;
-                position: relative;
-            }
-        }
-        
-        /* Assurer que le contenu principal n'empiète pas sur les infos bancaires */
-        .tm_invoice {
-            padding-bottom: 100px; /* Espace pour les infos bancaires */
+            body { background: white; padding: 0; }
+            .tm_container { box-shadow: none; max-width: 100%; margin: 0; }
+            .controls, .tm_invoice_btns { display: none !important; }
+            .tm_invoice_wrap { min-height: 0; padding: 30px; }
+            .invoice-table th { -webkit-print-color-adjust: exact; }
+            .grand-total { -webkit-print-color-adjust: exact; }
         }
     </style>
 </head>
 
 <body>
     <div class="tm_container">
-        <div class="tm_invoice_wrap">
-            <div class="tm_invoice tm_style2" id="tm_download_section">
-                <div class="tm_invoice_in">
-                    <!-- ================= HEADER ================= -->
-                    <div class="tm_invoice_head tm_top_head tm_mb20">
-                        <div class="tm_invoice_left">
-                            <div class="tm_logo">
-                                <img src="{{ asset('storage/'.core()->getConfigData('general.general.admin_logo.logo_image')) }}" alt="Logo" height="70">
-                            </div>
-                        </div>
-                        <div class="tm_invoice_right">
-                            <div class="tm_grid_row tm_col_3">
-                                <div>
-                                    <b class="tm_primary_color">Registre N°</b><br>
-                                    {{ core()->getConfigData('general.general.registre_commerce.registre_commerce') }}
-                                </div>
-                                <div>
-                                    <b class="tm_primary_color">Ninea</b><br>
-                                    {{ core()->getConfigData('general.general.ninea.ninea') }}
-                                </div>
-                                <div>
-                                    <b class="tm_primary_color">Adresse</b><br>
-                                    {{ core()->getConfigData('general.general.adresse_siege.adresse_siege') }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <!-- Controls -->
+        <div class="controls tm_invoice_btns">
+            <a href="javascript:window.print()" class="btn">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                Imprimer
+            </a>
+            <button id="tm_download_btn" class="btn">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                Télécharger
+            </button>
+        </div>
 
-                    <!-- ================= CLIENT & TITLE ================= -->
-                    <div class="tm_invoice_info tm_mb10">
-                        <div class="tm_invoice_info_left">
-                            <p class="tm_mb2"><b></b></p>
-                            <p>
-                                <b class="tm_f16 tm_primary_color">À : {{ $quote->person->name }}</b><br>
-                            </p>
-                        </div>
-                        <div class="tm_invoice_info_right">
-                            <p style="float: right" class="">Date : {{ $quote->created_at->format('d F Y') }}</p>
-                            <div class="tm_ternary_color tm_f40 tm_invoice_title">
-                                {{ strtoupper($quote->type) }} N° {{ $quote->id }}
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ================= ITEMS TABLE ================= -->
-                    <div class="tm_table tm_style1">
-                        <div class="tm_round_border">
-                            <div class="tm_table_responsive">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th class="tm_width_7 tm_semi_bold" style="color: white; background-color:#0000ff" id="color">Description</th>
-                                            <th class="tm_width_2 tm_semi_bold" style="color: white; background-color:#0000ff" id="color">Prix</th>
-                                            <th class="tm_width_1 tm_semi_bold" style="color: white; background-color:#0000ff" id="color">Quantité</th>
-                                            <th class="tm_width_2 tm_semi_bold tm_text_right" style="color: white; background-color:#0000ff" id="color">Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($quote->items as $item)
-                                        <tr class="tm_gray_bg">
-                                            <td class="tm_width_7">
-                                                <p class="tm_m0 tm_f16 tm_primary_color">{{ $item->name }}</p>
-                                                {{ $item->additional['description'] ?? $item->product->description ?? '' }}
-                                            </td>
-                                            <td class="tm_width_2">{{ number_format($item->price, 0, ' ', '.') }} {{ $quote->devise }}</td>
-                                            <td class="tm_width_1">{{ $item->quantity }}</td>
-                                            <td class="tm_width_2 tm_text_right">{{ number_format($item->total + $item->tax_amount, 0, ' ', '.') }} {{ $quote->devise }}</td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        
-                        <!-- ================= TOTALS ================= -->
-                        <div class="tm_invoice_footer tm_mb15 tm_m0_md">
-                            <div class="tm_left_footer" style="margin-top:33px"></div>
-                            <div class="tm_right_footer">
-                                <table class="tm_mb15">
-                                    <tbody>
-                                        <tr>
-                                            <td class="tm_width_3 tm_primary_color tm_border_none tm_bold">TOTAL HT</td>
-                                            <td class="tm_width_3 tm_primary_color tm_text_right tm_border_none tm_bold">
-                                                {{ number_format($quote->sub_total, 0, ' ', '.') }} {{ $quote->devise }}
-                                            </td>
-                                        </tr>
-                                       
-                                        @if(core()->getConfigData('general.general.tva_settings.tva_18'))
-                                        <tr>
-                                            <td class="tm_width_3 tm_primary_color tm_border_none tm_pt0">
-                                                TVA 
-                                                (18%)
-                                            
-                                            </td>
-                                            <td class="tm_width_3 tm_primary_color tm_text_right tm_border_none tm_pt0">
-                                                
-                                                    {{ number_format($quote->sub_total * 0.18, 0, ' ', '.') }}
-                                               
-                                                
-                                            </td>
-                                        </tr>
-                                        @endif
-                                        <tr>
-                                            <td id="color" style="background-color:#0000ff" class="tm_width_3 tm_border_top_0 tm_bold tm_f16 tm_white_color tm_radius_6_0_0_6">
-                                                Total TTC
-                                            </td>
-                                            <td id="color" style="background-color:#0000ff" class="tm_width_3 tm_border_top_0 tm_bold tm_f16 tm_primary_color tm_text_right tm_white_color tm_radius_0_6_6_0">
-                                                @if(core()->getConfigData('general.general.tva_settings.tva_18'))
-                                                   
-                                                        {{ number_format($quote->sub_total + ($quote->sub_total * 0.18), 0, ' ', '.') }}
-                                                   
-                                                @else
-                                                    {{ number_format($quote->sub_total, 0, ' ', '.') }}
-                                                @endif
-                                                {{ $quote->devise }}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        
-                        <div class="tm_invoice_footer tm_type1">
-                            <div class="tm_left_footer"></div>
-                        </div>
-                    </div>
-
-                    <!-- ESPACE POUR ÉVITER QUE LE CONTENU NE CHEVAUCHE LES INFOS BANCAIRES -->
-                    <div style="height: 80px;"></div>
-                    
-                    <!-- ================= INFOS BANCAIRES (TOUJOURS EN BAS) ================= -->
-                    @if(core()->getConfigData('general.general.iban.iban'))
-                    <div class="bank-info-container">
-                        <div class="tm_note tm_font_style_normal tm_text_center" style="position: absolute; bottom: 0; left: 0; right: 0; width: 100%;">
-                            <hr class="tm_mb15">
-                            <p class="tm_mb2"> </p>
-                            <p class="tm_m0" style="font-size: 10px !important">
-                                Banque : {{ core()->getConfigData('general.general.nom_banque.nom_banque') }} </p>
-                            <p class="tm_m0" style="font-size: 10px !important"> Code SWIFT : {{ core()->getConfigData('general.general.swift_code.swift_code') }} </p>
-                            <p class="tm_m0" style="font-size: 10px !important"> IBAN : {{ core()->getConfigData('general.general.iban.iban') }}
-                            </p>
-                        </div>
-                    </div>
-                    @endif
+        <div class="tm_invoice_wrap" id="tm_download_section">
+            
+            <!-- Header -->
+            <div class="header">
+                <div class="logo">
+                     <img src="{{ asset('storage/'.core()->getConfigData('general.general.admin_logo.logo_image')) }}" alt="Logo">
+                </div>
+                <div class="company-info">
+                    <strong>{{ core()->getConfigData('general.general.registre_commerce.registre_commerce') }}</strong><br>
+                    NINEA: {{ core()->getConfigData('general.general.ninea.ninea') }}<br>
+                    {{ core()->getConfigData('general.general.adresse_siege.adresse_siege') }}
                 </div>
             </div>
 
-            <!-- ================= BUTTONS & COLOR PICKER ================= -->
-            <div class="tm_invoice_btns tm_hide_print">
-                <a href="javascript:window.print()" class="tm_invoice_btn tm_color1">
-                    <span class="tm_btn_icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512">
-                            <path d="M384 368h24a40.12 40.12 0 0040-40V168a40.12 40.12 0 00-40-40H104a40.12 40.12 0 00-40 40v160a40.12 40.12 0 0040 40h24" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32"></path>
-                            <rect x="128" y="240" width="256" height="208" rx="24.32" ry="24.32" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32"></rect>
-                            <path d="M384 128v-24a40.12 40.12 0 00-40-40H168a40.12 40.12 0 00-40 40v24" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32"></path>
-                            <circle cx="392" cy="184" r="24" fill="currentColor"></circle>
-                        </svg>
-                    </span>
-                    <span class="tm_btn_text">Imprimer</span>
-                </a>
-                <button id="tm_download_btn" class="tm_invoice_btn tm_color2">
-                    <span class="tm_btn_icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512">
-                            <path d="M320 336h76c55 0 100-21.21 100-75.6s-53-73.47-96-75.6C391.11 99.74 329 48 256 48c-69 0-113.44 45.79-128 91.2-60 5.7-112 35.88-112 98.4S70 336 136 336h56M192 400.1l64 63.9 64-63.9M256 224v224.03" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"></path>
-                        </svg>
-                    </span>
-                    <span class="tm_btn_text">Télécharger</span>
-                </button>
-
-                <!-- ================= COLOR PICKER ================= -->
-               <!-- <ul class="color-list">
-                    <li class="color-item selected" style="background-color:#0000ff" onclick="changeColor('#0000ff', this)"></li>
-                    <li class="color-item" style="background-color: red;" onclick="changeColor('red', this)"></li>
-                    <li class="color-item" style="background-color: green;" onclick="changeColor('green', this)"></li>
-                    <li class="color-item" style="background-color: blue;" onclick="changeColor('blue', this)"></li>
-                    <li class="color-item" style="background-color: orange;" onclick="changeColor('orange', this)"></li>
-                    <li class="color-item" style="background-color: purple;" onclick="changeColor('purple', this)"></li>
-                    <li class="color-item" style="background-color: brown;" onclick="changeColor('brown', this)"></li>
-                </ul> -->
+            <!-- Client & Meta -->
+            <div class="client-meta-wrapper">
+                <div class="client-info">
+                    <div class="info-label">Facturé à</div>
+                    <div class="info-value">{{ $quote->person->name }}</div>
+                    @if($quote->person->address)
+                    <div style="margin-top:5px; color:#666;">
+                        {{ $quote->person->address }}
+                    </div>
+                    @endif
+                </div>
+                <div class="meta-info">
+                    <div class="doc-title">{{ strtoupper($quote->type) }} N° {{ $quote->id }}</div>
+                    <div class="info-label">Date d'émission</div>
+                    <div class="info-value">{{ $quote->created_at->format('d/m/Y') }}</div>
+                </div>
             </div>
+
+            <!-- Table -->
+            <table class="invoice-table">
+                <thead>
+                    <tr>
+                        <th style="width: 50%;">Description</th>
+                        <th class="text-right" style="width: 15%;">Prix Unitaire</th>
+                        <th class="text-right" style="width: 10%;">Qté</th>
+                        <th class="text-right" style="width: 25%;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($quote->items as $item)
+                    <tr>
+                        <td>
+                            <strong>{{ $item->name }}</strong><br>
+                            <span style="font-size: 12px; color: #888;">{{ $item->additional['description'] ?? $item->product->description ?? '' }}</span>
+                        </td>
+                        <td class="text-right">{{ number_format($item->price, 0, ' ', '.') }} {{ $quote->devise }}</td>
+                        <td class="text-right">{{ $item->quantity }}</td>
+                        <td class="text-right">{{ number_format($item->total + $item->tax_amount, 0, ' ', '.') }} {{ $quote->devise }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+
+            <!-- Totals -->
+            <div class="totals-section">
+                <table class="totals-table">
+                    <tr>
+                        <td class="total-label">Sous-total HT</td>
+                        <td class="total-value">{{ number_format($quote->sub_total, 0, ' ', '.') }} {{ $quote->devise }}</td>
+                    </tr>
+                    
+                    @if(core()->getConfigData('general.general.tva_settings.tva_18'))
+                    <tr>
+                        <td class="total-label">TVA (18%)</td>
+                        <td class="total-value">{{ number_format($quote->sub_total * 0.18, 0, ' ', '.') }} {{ $quote->devise }}</td>
+                    </tr>
+                    @endif
+
+                    <!-- Acompte Logic -->
+                    @if($quote->acompte && $quote->acompte != 0 && $quote->type == 'facture')
+                        @php
+                            $totalTTC = core()->getConfigData('general.general.tva_settings.tva_18') 
+                                ? $quote->sub_total * 1.18 
+                                : $quote->sub_total;
+                            $remaining = $totalTTC - $quote->acompte;
+                        @endphp
+                        <tr>
+                            <td class="total-label">Total TTC</td>
+                            <td class="total-value">{{ number_format($totalTTC, 0, ' ', '.') }} {{ $quote->devise }}</td>
+                        </tr>
+                        <tr>
+                            <td class="total-label" style="color:red">Déjà payé (Acompte)</td>
+                            <td class="total-value" style="color:red">- {{ number_format($quote->acompte, 0, ' ', '.') }} {{ $quote->devise }}</td>
+                        </tr>
+                        <tr>
+                             <td colspan="2" style="padding:0;">
+                                <div style="background: #000; color: white; padding: 10px; margin-top: 10px; display:flex; justify-content:space-between; align-items:center;">
+                                    <span style="font-size:14px; text-transform:uppercase;">Reste à Payer</span>
+                                    <span style="font-size:18px; font-weight:bold;">{{ number_format($remaining, 0, ' ', '.') }} {{ $quote->devise }}</span>
+                                </div>
+                            </td>
+                        </tr>
+                    @else
+                        <tr>
+                            <td colspan="2" style="padding:0;">
+                                <div style="background: #000; color: white; padding: 10px; margin-top: 10px; display:flex; justify-content:space-between; align-items:center;">
+                                    <span style="font-size:14px; text-transform:uppercase;">Total TTC</span>
+                                    <span style="font-size:18px; font-weight:bold;">
+                                        @if(core()->getConfigData('general.general.tva_settings.tva_18'))
+                                            {{ number_format($quote->sub_total * 1.18, 0, ' ', '.') }}
+                                        @else
+                                            {{ number_format($quote->sub_total, 0, ' ', '.') }}
+                                        @endif
+                                        {{ $quote->devise }}
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    @endif
+                </table>
+            </div>
+
+            <!-- Bank Info Footer -->
+            @if(core()->getConfigData('general.general.iban.iban'))
+            <div class="footer">
+                <div style="background: #f9f9f9; padding: 15px; border-radius: 5px; display: inline-block; width: 100%; box-sizing: border-box;">
+                    <strong>Informations Bancaires</strong><br>
+                    Banque: {{ core()->getConfigData('general.general.nom_banque.nom_banque') }} &nbsp;|&nbsp;
+                    Code SWIFT: {{ core()->getConfigData('general.general.swift_code.swift_code') }} <br>
+                    IBAN: {{ core()->getConfigData('general.general.iban.iban') }}
+                </div>
+            </div>
+            @endif
+
         </div>
     </div>
-
-    <script>
-        function changeColor(color, element) {
-            // Change the background color of all elements with id="color"
-            var items = document.querySelectorAll('#color');
-            items.forEach(function(item) {
-                item.style.backgroundColor = color;
-            });
-
-            // Remove the 'selected' class from all items
-            var items = document.querySelectorAll('.color-item');
-            items.forEach(function(item) {
-                item.classList.remove('selected');
-            });
-
-            // Add the 'selected' class to the clicked item
-            element.classList.add('selected');
-        }
-    </script>
 
     <script>
         (function ($) {
@@ -295,8 +371,8 @@
 
             $('#tm_download_btn').on('click', function () {
                 var downloadSection = $('#tm_download_section');
-                var a4Width = 595.28; // Largeur A4 en points
-                var a4Height = 841.89; // Hauteur A4 en points
+                var a4Width = 595.28; 
+                var a4Height = 841.89; 
                 var canvasImageWidth = downloadSection.width();
                 var canvasImageHeight = downloadSection.height();
 
@@ -309,31 +385,13 @@
                 .then(function (canvas) {
                     var imgData = canvas.toDataURL('image/png', 1.0);
                     var pdf = new jspdf.jsPDF('p', 'pt', 'a4');
-
-                    // Calculer le rapport de conversion
                     var imgWidth = a4Width;
                     var imgHeight = canvasImageHeight * (a4Width / canvasImageWidth);
-
-                    var heightLeft = imgHeight;
-                    var position = 0;
-
-                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= a4Height;
-
-                    while (heightLeft > 0) {
-                        position = heightLeft - imgHeight;
-                        pdf.addPage();
-                        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                        heightLeft -= a4Height;
-                    }
-
+                    
+                    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
                     pdf.save('{{ $quote->type_ }}_{{ $quote->id }}.pdf');
-                })
-                .catch(function (error) {
-                    console.error('Erreur lors de la capture :', error);
                 });
             });
-
         })(jQuery);
     </script>
 </body>
