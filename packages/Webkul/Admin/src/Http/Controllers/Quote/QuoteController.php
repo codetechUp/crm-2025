@@ -200,4 +200,34 @@ class QuoteController extends Controller
             'Quote_'.$quote->subject.'_'.$quote->created_at->format('d-m-Y')
         );
     }
+
+    /**
+     * Convert quote to invoice.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function convert($id)
+    {
+        $quote = $this->quoteRepository->findOrFail($id);
+
+        if (! empty($quote->items)) {
+            foreach ($quote->items as $item) {
+                if ($item->product->quantity >= $item->quantity && $item->quantity > 0) {
+                    $item->product->quantity = $item->product->quantity - $item->quantity;
+                    $item->product->update();
+                } else {
+                    session()->flash('error', 'Votre produit ' . $item->name . ' est en rupture , quantité restante ' . $item->product->quantity);
+
+                    return redirect()->back();
+                }
+            }
+        }
+
+        $quote->update(['type' => 'facture']);
+
+        session()->flash('success', trans('admin::app.quotes.index.create-success'));
+
+        return redirect()->route('admin.factures.index');
+    }
 }

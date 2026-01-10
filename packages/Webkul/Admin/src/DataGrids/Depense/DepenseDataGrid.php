@@ -104,7 +104,7 @@ class DepenseDataGrid extends DataGrid
             'sortable'   => true,
         ]);
 
-        $this->addColumn([
+        /*$this->addColumn([
             'index'      => 'user_name',
             'label'      => trans('admin::app.depenses.index.datagrid.user'),
             'type'       => 'string',
@@ -119,7 +119,7 @@ class DepenseDataGrid extends DataGrid
                 $route = route('admin.settings.users.edit', $row->user_id);
                 return "<a href='{$route}' class='text-blue-600 hover:underline'>{$row->user_name}</a>";
             },
-        ]);
+        ]);*/
 
         $this->addColumn([
             'index'      => 'created_at',

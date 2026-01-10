@@ -106,41 +106,12 @@ class QuoteDataGrid extends DataGrid
             },
         ]);
 
-        $this->addColumn([
-            'index'      => 'sub_total',
-            'label'      => trans('admin::app.quotes.index.datagrid.subtotal'),
-            'type'       => 'string',
-            'sortable'   => true,
-            'filterable' => true,
-            'closure'    => fn ($row) => core()->formatBasePrice($row->sub_total, 2),
-        ]);
+       
 
-        $this->addColumn([
-            'index'      => 'discount_amount',
-            'label'      => trans('admin::app.quotes.index.datagrid.discount'),
-            'type'       => 'string',
-            'sortable'   => true,
-            'filterable' => true,
-            'closure'    => fn ($row) => core()->formatBasePrice($row->discount_amount, 2),
-        ]);
+       
 
-        $this->addColumn([
-            'index'      => 'tax_amount',
-            'label'      => trans('admin::app.quotes.index.datagrid.tax'),
-            'type'       => 'string',
-            'filterable' => true,
-            'sortable'   => true,
-            'closure'    => fn ($row) => core()->formatBasePrice($row->tax_amount, 2),
-        ]);
-
-        $this->addColumn([
-            'index'      => 'adjustment_amount',
-            'label'      => trans('admin::app.quotes.index.datagrid.adjustment'),
-            'type'       => 'string',
-            'sortable'   => true,
-            'filterable' => false,
-            'closure'    => fn ($row) => core()->formatBasePrice($row->adjustment_amount, 2),
-        ]);
+        
+        
 
         $this->addColumn([
             'index'      => 'grand_total',
@@ -188,13 +159,7 @@ class QuoteDataGrid extends DataGrid
         }
 
         if (bouncer()->hasPermission('quotes.print')) {
-            $this->addAction([
-                'index'  => 'print',
-                'icon'   => 'icon-settings-webforms',
-                'title'  => trans('admin::app.quotes.index.datagrid.print'),
-                'method' => 'GET',
-                'url'    => fn ($row) => route('admin.quotes.print', $row->id),
-            ]);
+        
 
             $this->addAction([
                 'index'  => 'print',
@@ -202,6 +167,16 @@ class QuoteDataGrid extends DataGrid
                 'title'  => trans('admin::app.quotes.index.datagrid.print'),
                 'method' => 'GET',
                 'url'    => fn ($row) => route('admin.quotes.print', $row->id),
+            ]);
+        }
+
+        if (bouncer()->hasPermission('quotes.edit')) {
+            $this->addAction([
+                'index'  => 'convert',
+                'icon'   => 'icon-settings-webforms',
+                'title'  => 'Convertir en facture',
+                'method' => 'GET',
+                'url'    => fn ($row) => route('admin.quotes.convert', $row->id),
             ]);
         }
 

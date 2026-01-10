@@ -344,59 +344,22 @@
 
                 <div class="flex justify-end">
                     <div class="grid w-[348px] gap-4 rounded-lg bg-gray-100 p-4 text-sm dark:bg-gray-950 dark:text-white">
-                        <div class="flex w-full justify-between gap-x-5">
-                            @lang('admin::app.quotes.create.sub-total', ['symbol' => core()->currencySymbol(config('app.currency'))])
 
-                            <input
-                                type="hidden"
-                                name="sub_total"
-                                class="control"
-                                :value="subTotal"
-                                readonly
-                            >
+                        
 
-                            <p>@{{ subTotal }}</p>
-                        </div>
-
-                        <div class="flex w-full justify-between gap-x-5">
-                            @lang('admin::app.quotes.create.total-discount', ['symbol' => core()->currencySymbol(config('app.currency'))])
-
-                            <input
-                                type="hidden"
-                                name="discount_amount"
-                                :value="discountAmount"
-                            >
-
-                            <p>@{{ discountAmount }}</p>
-                        </div>
-
-                        <div class="flex w-full justify-between gap-x-5">
-                            @lang('admin::app.quotes.create.total-tax', ['symbol' => core()->currencySymbol(config('app.currency'))])
-
-                            <input
-                                type="hidden"
-                                name="tax_amount"
-                                :value="taxAmount"
-                            >
-
-                            <p>@{{ taxAmount }}</p>
-                        </div>
-
-                        <div class="flex w-full justify-between gap-x-5">
-                            @lang('admin::app.quotes.create.total-adjustment', ['symbol' => core()->currencySymbol(config('app.currency'))])
-
+                       <div class="flex w-full justify-between gap-x-5">
+                           Acompte
                             <x-admin::form.control-group.control
                                 type="inline"
-                                ::name="`adjustment_amount`"
-                                ::value="adjustmentAmount"
+                                ::name="`acompte`"
+                                :value="old('acompte') ?? number_format($quote->acompte, 0, '', '')"
                                 rules="required|decimal:4"
                                 ::errors="errors"
-                                :label="trans('admin::app.quotes.create.adjustment-amount')"
-                                :placeholder="trans('admin::app.quotes.create.adjustment-amount')"
-                                @on-change="(event) => adjustmentAmount = event.value"
+                                :label="trans('admin::app.quotes.create.acompte')"
+                                :placeholder="trans('admin::app.quotes.create.acompte')"
+                                
                             />
                         </div>
-
                         <div class="flex w-full justify-between gap-x-5">
                             @lang('admin::app.quotes.create.grand-total', ['symbol' => core()->currencySymbol(config('app.currency'))])
 
@@ -612,6 +575,9 @@
                      *
                      * @returns {Number}
                      */
+                    acompte() {
+                        return this.quote.acompte;
+                    },
                     subTotal() {
                         let total = 0;
 
