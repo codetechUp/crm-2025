@@ -51,7 +51,7 @@
     @if ($favicon = core()->getConfigData('general.general.admin_logo.logo_image'))
         <link
             type="image/x-icon"
-            href="{{ asset('storage/configuration/LUMdDuAKIXh3ZPFVRibYB01F8iuOndDvVTFezT0T.jpg')}}"
+            href="https://crm.synapsispharma.com/public/storage/configuration/fH5ZCxBbFvMJhC78U8daMrtzFwn37Ki6BhuDQjEv.jpg"
             rel="shortcut icon"
             sizes="16x16"
         >

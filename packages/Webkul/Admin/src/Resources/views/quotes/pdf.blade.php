@@ -239,7 +239,7 @@
             <!-- Header -->
             <div class="header">
                 <div class="logo">
-                     <img src="{{ asset('storage/'.core()->getConfigData('general.general.admin_logo.logo_image')) }}" alt="Logo">
+                     <img src="https://crm.synapsispharma.com/public/storage/configuration/fH5ZCxBbFvMJhC78U8daMrtzFwn37Ki6BhuDQjEv.jpg" alt="Logo">
                 </div>
                 <div class="company-info">
                     <strong>{{ core()->getConfigData('general.general.registre_commerce.registre_commerce') }}</strong><br>

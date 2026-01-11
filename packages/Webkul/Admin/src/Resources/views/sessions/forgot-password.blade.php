@@ -10,7 +10,7 @@
             @if ($logo = core()->getConfigData('general.general.admin_logo.logo_image'))
                 <img
                     class="h-10 w-[110px]"
-                    src="{{ asset('storage/configuration/LUMdDuAKIXh3ZPFVRibYB01F8iuOndDvVTFezT0T.jpg') }}"
+                    src="https://crm.synapsispharma.com/public/storage/configuration/fH5ZCxBbFvMJhC78U8daMrtzFwn37Ki6BhuDQjEv.jpg"
                     alt="{{ config('app.name') }}"
                 />
             @else
