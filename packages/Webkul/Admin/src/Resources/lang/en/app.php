@@ -708,6 +708,7 @@ return [
             'title'     => 'Create Products',
             'general'   => 'General',
             'price'     => 'Price',
+            'category'  => 'Category',
         ],
 
         'edit' => [
@@ -715,6 +716,37 @@ return [
             'save-btn'  => 'Save Products',
             'general'   => 'General',
             'price'     => 'Price',
+            'category'  => 'Category',
+        ],
+
+        'categories' => [
+            'index' => [
+                'title'      => 'Product Categories',
+                'create-btn' => 'Create Category',
+                'datagrid'   => [
+                    'id'          => 'ID',
+                    'name'        => 'Name',
+                    'description' => 'Description',
+                    'edit'        => 'Edit',
+                    'delete'      => 'Delete',
+                ],
+            ],
+            'create' => [
+                'title'       => 'Create Category',
+                'save-btn'    => 'Save Category',
+                'name'        => 'Name',
+                'description' => 'Description',
+            ],
+            'edit' => [
+                'title'       => 'Edit Category',
+                'save-btn'    => 'Update Category',
+                'name'        => 'Name',
+                'description' => 'Description',
+            ],
+            'create-success' => 'Category created successfully.',
+            'update-success' => 'Category updated successfully.',
+            'delete-success' => 'Category deleted successfully.',
+            'delete-failed'  => 'Category delete failed.',
         ],
 
         'view' => [
@@ -2436,5 +2468,36 @@ return [
         'no-records' => 'Nothing to export',
         'xls'        => 'XLS',
         'xlsx'       => 'XLSX',
+    ],
+    'warehouse' => [
+        'stock-entries' => [
+            'index' => [
+                'title'      => 'Stock Entries (Approvisionnement)',
+                'create-btn' => 'Add Entry',
+                'datagrid'   => [
+                    'id'         => 'ID',
+                    'date'       => 'Stock Date',
+                    'supplier'   => 'Supplier',
+                    'created-by' => 'Created By',
+                    'delete'     => 'Delete',
+                ],
+            ],
+            'create' => [
+                'title'           => 'New Stock Entry',
+                'save-btn'        => 'Save Entry',
+                'general'         => 'General',
+                'date-appro'      => 'Stock Date',
+                'supplier'        => 'Supplier',
+                'notes'           => 'Notes',
+                'products'        => 'Products',
+                'add-product'     => 'Add Product',
+                'search-products' => 'Search Products...',
+                'quantity'        => 'Quantity',
+                'select-person'   => 'Select Supplier',
+            ],
+            'create-success' => 'Stock entry created successfully.',
+            'delete-success' => 'Stock entry deleted successfully.',
+            'delete-failed'  => 'Stock entry delete failed.',
+        ],
     ],
 ];

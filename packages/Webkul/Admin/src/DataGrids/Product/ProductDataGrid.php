@@ -20,6 +20,7 @@ class ProductDataGrid extends DataGrid
             ->leftJoin('product_inventories', 'products.id', '=', 'product_inventories.product_id')
             ->leftJoin('product_tags', 'products.id', '=', 'product_tags.product_id')
             ->leftJoin('tags', 'tags.id', '=', 'product_tags.tag_id')
+            ->leftJoin('product_categories', 'products.product_category_id', '=', 'product_categories.id')
             ->select(
                 'products.id',
                 'products.sku',
@@ -27,6 +28,7 @@ class ProductDataGrid extends DataGrid
                 'products.price',
                 'products.quantity',
                 'tags.name as tag_name',
+                'product_categories.name as category_name',
             )
             ->addSelect(DB::raw('SUM('.$tablePrefix.'product_inventories.in_stock) as total_in_stock'))
             ->addSelect(DB::raw('SUM('.$tablePrefix.'product_inventories.allocated) as total_allocated'))
@@ -85,6 +87,16 @@ class ProductDataGrid extends DataGrid
             'label'    => trans('admin::app.products.index.datagrid.in-stock'),
             'type'     => 'string',
             'sortable' => true,
+        ]);
+
+        $this->addColumn([
+            'index'      => 'category_name',
+            'label'      => trans('admin::app.products.create.category'),
+            'type'       => 'string',
+            'sortable'   => true,
+            'searchable' => true,
+            'filterable' => true,
+            'closure'    => fn ($row) => $row->category_name ?? '--',
         ]);
 
         /*$this->addColumn([

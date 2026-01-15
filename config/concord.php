@@ -14,6 +14,7 @@ return [
         \Webkul\Lead\Providers\ModuleServiceProvider::class,
         \Webkul\Product\Providers\ModuleServiceProvider::class,
         \Webkul\Quote\Providers\ModuleServiceProvider::class,
+        \Webkul\Order\Providers\ModuleServiceProvider::class,
         \Webkul\Tag\Providers\ModuleServiceProvider::class,
         \Webkul\User\Providers\ModuleServiceProvider::class,
         \Webkul\Warehouse\Providers\ModuleServiceProvider::class,

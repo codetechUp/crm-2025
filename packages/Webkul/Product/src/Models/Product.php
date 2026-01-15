@@ -12,6 +12,7 @@ use Webkul\Product\Contracts\Product as ProductContract;
 use Webkul\Tag\Models\TagProxy;
 use Webkul\Warehouse\Models\LocationProxy;
 use Webkul\Warehouse\Models\WarehouseProxy;
+use Webkul\Product\Models\ProductCategoryProxy;
 
 class Product extends Model implements ProductContract
 {
@@ -28,6 +29,7 @@ class Product extends Model implements ProductContract
         'description',
         'quantity',
         'price',
+        'product_category_id',
     ];
 
     /**
@@ -68,5 +70,13 @@ class Product extends Model implements ProductContract
     public function activities()
     {
         return $this->belongsToMany(ActivityProxy::modelClass(), 'product_activities');
+    }
+
+    /**
+     * Get the category.
+     */
+    public function category()
+    {
+        return $this->belongsTo(ProductCategoryProxy::modelClass(), 'product_category_id');
     }
 }

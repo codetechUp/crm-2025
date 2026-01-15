@@ -22,5 +22,11 @@ class ProductServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register() {}
+    public function register()
+    {
+        $this->app->bind(
+            \Webkul\Product\Contracts\ProductCategory::class,
+            \Webkul\Product\Models\ProductCategory::class
+        );
+    }
 }

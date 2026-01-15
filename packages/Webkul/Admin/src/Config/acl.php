@@ -57,6 +57,36 @@ return [
         'route' => ['admin.quotes.delete', 'admin.quotes.mass_delete'],
         'sort'  => 4,
     ], [
+        'key'   => 'orders',
+        'name'  => 'Commandes',
+        'route' => 'admin.orders.index',
+        'sort'  => 4,
+    ], [
+        'key'   => 'orders.create',
+        'name'  => 'admin::app.acl.create',
+        'route' => ['admin.orders.create', 'admin.orders.store'],
+        'sort'  => 1,
+    ], [
+        'key'   => 'orders.view',
+        'name'  => 'admin::app.acl.view',
+        'route' => 'admin.orders.show',
+        'sort'  => 2,
+    ], [
+        'key'   => 'orders.edit',
+        'name'  => 'admin::app.acl.edit',
+        'route' => ['admin.orders.edit', 'admin.orders.update'],
+        'sort'  => 3,
+    ], [
+        'key'   => 'orders.update-status',
+        'name'  => 'Modifier le statut',
+        'route' => 'admin.orders.update_status',
+        'sort'  => 4,
+    ], [
+        'key'   => 'orders.delete',
+        'name'  => 'admin::app.acl.delete',
+        'route' => ['admin.orders.delete', 'admin.orders.mass_delete'],
+        'sort'  => 5,
+    ], [
         'key'   => 'mail',
         'name'  => 'admin::app.acl.mail',
         'route' => 'admin.mail.index',

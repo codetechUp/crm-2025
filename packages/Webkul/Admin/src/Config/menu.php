@@ -35,6 +35,17 @@ return [
     ],
 
     /**
+     * Orders.
+     */
+    [
+        'key'        => 'orders',
+        'name'       => 'admin::app.layouts.orders',
+        'route'      => 'admin.orders.index',
+        'sort'       => 4,
+        'icon-class' => 'icon-settings-flow',
+    ],
+
+    /**
      * Emails.
      */
     [
@@ -131,6 +142,29 @@ return [
         'route'      => 'admin.products.index',
         'sort'       => 7,
         'icon-class' => 'icon-tag',
+    ], [
+        'key'        => 'products.all',
+        'name'       => 'Tous les produits',
+        'route'      => 'admin.products.index',
+        'sort'       => 1,
+        'icon-class' => '',
+    ], [
+        'key'        => 'products.categories',
+        'name'       => 'Catégories',
+        'route'      => 'admin.products.categories.index',
+        'sort'       => 2,
+        'icon-class' => '',
+    ],
+
+    /**
+     * Warehouse.
+     */
+    [
+        'key'        => 'warehouse',
+        'name'       => 'admin::app.warehouse.stock-entries.index.title',
+        'route'      => 'admin.warehouse.stock_entries.index',
+        'sort'       => 8,
+        'icon-class' => 'icon-settings-warehouse',
     ],
 
     /**

@@ -41,6 +41,13 @@ class AdminServiceProvider extends ServiceProvider
 
         Blade::anonymousComponentPath(__DIR__.'/../Resources/views/components', 'admin');
 
+        \Illuminate\Support\Facades\View::composer('admin::components.layouts.header.index', function ($view) {
+            $orderRepository = app(\Webkul\Order\Repositories\OrderRepository::class);
+            
+            $view->with('delayedOrders', $orderRepository->getDelayedOrders());
+            $view->with('ordersAtRisk', $orderRepository->getOrdersAtRisk());
+        });
+
         $this->app->bind(ExceptionHandler::class, Handler::class);
 
         Relation::morphMap([

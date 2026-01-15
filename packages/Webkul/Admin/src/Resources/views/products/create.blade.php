@@ -62,6 +62,29 @@
                             ])"
                         />
 
+                        <!-- Product Category -->
+                        <x-admin::form.control-group>
+                            <x-admin::form.control-group.label>
+                                @lang('admin::app.products.create.category')
+                            </x-admin::form.control-group.label>
+
+                            @php
+                                $categories = app('Webkul\Product\Repositories\ProductCategoryRepository')->all();
+                            @endphp
+
+                            <x-admin::form.control-group.control
+                                type="select"
+                                name="product_category_id"
+                                :value="old('product_category_id')"
+                                :label="trans('admin::app.products.create.category')"
+                            >
+                                <option value="">@lang('admin::app.products.create.select-category')</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </x-admin::form.control-group.control>
+                        </x-admin::form.control-group>
+
                         {!! view_render_event('admin.products.create.attributes.after') !!}
                     </div>
                 </div>

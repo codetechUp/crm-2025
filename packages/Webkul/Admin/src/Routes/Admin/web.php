@@ -41,9 +41,19 @@ require 'activities-routes.php';
 require 'quote-routes.php';
 
 /**
+ * Orders routes.
+ */
+require 'order-routes.php';
+
+/**
  * Factures routes.
  */
 require 'facture-routes.php';
+
+/**
+ * Warehouse routes.
+ */
+require 'warehouse-routes.php';
 
 /**
  * Configuration routes.
@@ -54,6 +64,11 @@ require 'configuration-routes.php';
  * Depense routes.
  */
 require 'depense-routes.php';
+
+/**
+ * Notification routes.
+ */
+require 'notification-routes.php';
 
 
 /**

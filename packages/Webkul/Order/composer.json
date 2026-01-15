@@ -1,0 +1,14 @@
+{
+    "name": "webkul/order",
+    "description": "Order management package for Krayin CRM",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Webkul\\Order\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.1"
+    }
+}

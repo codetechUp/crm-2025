@@ -71,16 +71,14 @@
             "Webkul\\Lead\\": "packages/Webkul/Lead/src",
             "Webkul\\Product\\": "packages/Webkul/Product/src",
             "Webkul\\Quote\\": "packages/Webkul/Quote/src",
+            "Webkul\\Order\\": "packages/Webkul/Order/src",
             "Webkul\\Tag\\": "packages/Webkul/Tag/src",
             "Webkul\\User\\": "packages/Webkul/User/src",
             "Webkul\\Warehouse\\": "packages/Webkul/Warehouse/src",
             "Webkul\\WebForm\\": "packages/Webkul/WebForm/src",
             "Webkul\\Automation\\": "packages/Webkul/Automation/src",
-            "Webkul\\Admin\\": "packages/Webkul/Admin/src",
-            "Webkul\\Core\\": "packages/Webkul/Core/src",
-            "Webkul\\Depense\\": "packages/Webkul/Depense/src"  
-}
-        
+            "Webkul\\Depense\\": "packages/Webkul/Depense/src"
+        }
     },
     "autoload-dev": {
         "psr-4": {
