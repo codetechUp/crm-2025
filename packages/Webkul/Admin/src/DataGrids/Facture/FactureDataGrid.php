@@ -16,7 +16,7 @@ class FactureDataGrid extends DataGrid
         $tablePrefix = DB::getTablePrefix();
 
         $queryBuilder = DB::table('quotes')
-         ->where('quotes.type', 'facture') 
+            ->where('quotes.type', 'facture')
             ->addSelect(
                 'quotes.id',
                 'quotes.subject',
@@ -33,6 +33,7 @@ class FactureDataGrid extends DataGrid
                 'users.name as sales_person',
                 'persons.id as person_id',
                 'persons.name as person_name',
+                'persons.emails as person_emails',
                 'quotes.expired_at as expired_quotes'
             )
             ->leftJoin('users', 'quotes.user_id', '=', 'users.id')
@@ -185,6 +186,73 @@ class FactureDataGrid extends DataGrid
                 'title'  => trans('admin::app.quotes.index.datagrid.edit'),
                 'method' => 'GET',
                 'url'    => fn ($row) => route('admin.factures.edit', $row->id),
+            ]);
+        }
+
+        if (bouncer()->hasPermission('mail.create')) {
+            $this->addAction([
+                'index'  => 'remind',
+                'icon'   => 'icon-settings-mail',
+                'title'  => 'Relance',
+                'method' => 'GET',
+                'url'    => function ($row) {
+                    $resteAPayer = $row->reste_a_payer ?? 0;
+                    $total  = (int) preg_replace('/\D/', '', $row->grand_total);
+                   
+                    if ($resteAPayer <= 0) {
+                        return 'javascript:void(0);';
+                    }
+
+                    $body = sprintf(
+                        "Bonjour %s,\n\n".
+                        "Nous nous permettons de vous relancer concernant votre facture  d'un montant  de %s.\n".
+                        "Le reste à payer est de %s.\n\n".
+                        "Merci de bien vouloir procéder au règlement dans les plus brefs délais.\n\n".
+                        "Cordialement,\n%s",
+                        $row->person_name ?? 'Client',
+                        
+                        $row->grand_total,
+                        $resteAPayer,
+                        auth()->guard('user')->user()->name ?? config('app.name')
+                    );
+
+                    // Récupération des emails du JSON persons.emails
+                    $replyTo = [];
+
+                    if (! empty($row->person_emails)) {
+                        $emailsArray = json_decode($row->person_emails, true);
+
+                        if (json_last_error() === JSON_ERROR_NONE && is_array($emailsArray) && count($emailsArray)) {
+                            // emails peut être un tableau d'objets ou de strings
+                            $values = array_map(function ($item) {
+                                if (is_array($item)) {
+                                    return $item['value'] ?? null;
+                                }
+
+                                return $item;
+                            }, $emailsArray);
+
+                            $values = array_filter($values);
+
+                            if (! empty($values)) {
+                                // Formater pour le composant tags (array de strings simples)
+                                $replyTo = array_map(function ($email) {
+                                    return trim($email);
+                                }, $values);
+                            }
+                        }
+                    }
+
+                    // Retourner une URL JavaScript qui émet un événement personnalisé pour ouvrir le popup
+                    $data = [
+                        'id'       => $row->id,
+                        'subject'  => 'Relance facture n° '.$row->id,
+                        'body'     => $body,
+                        'reply_to' => $replyTo,
+                    ];
+
+                    return 'javascript:window.dispatchEvent(new CustomEvent("open-facture-relance", {detail: '.json_encode($data).'}));';
+                },
             ]);
         }
 

@@ -79,6 +79,9 @@
 
             <!-- Revenue by Types -->
             @include('admin::dashboard.index.revenue-by-types')
+
+            <!-- Sales Performance -->
+            @include('admin::dashboard.index.sales-performance')
         </div>
 
         {!! view_render_event('admin.dashboard.index.content.left.after') !!}
@@ -130,6 +133,20 @@
                         placeholder="@lang('admin::app.dashboard.index.end-date')"
                     />
                 </x-admin::flat-picker.date>
+
+                <!-- Filter by Sales Person -->
+                <select
+                    v-model="filters.user_id"
+                    class="flex min-h-[39px] w-[180px] rounded-md border px-3 py-2 text-sm text-gray-600 transition-all hover:border-gray-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-gray-400"
+                >
+                    <option
+                        v-for="user in users"
+                        :key="user.value"
+                        :value="user.value"
+                    >
+                        @{{ user.label }}
+                    </option>
+                </select>
             </div>
 
             {!! view_render_event('admin.dashboard.index.date_filters.after') !!}
@@ -143,11 +160,33 @@
                     return {
                         filters: {
                             channel: '',
+                            user_id: '',
 
                             start: "{{ $startDate->format('Y-m-d') }}",
 
                             end: "{{ $endDate->format('Y-m-d') }}",
-                        }
+                        },
+                        users: [],
+                    }
+                },
+
+                mounted() {
+                    this.getUsers();
+                },
+
+                methods: {
+                    getUsers() {
+                        this.$axios.get("{{ route('admin.settings.users.search') }}")
+                            .then(response => {
+                                this.users = [
+                                    { value: '', label: 'Tous les commerciaux' },
+                                    ...response.data.data.map(user => ({
+                                        value: user.id,
+                                        label: user.name
+                                    }))
+                                ];
+                            })
+                            .catch(error => {});
                     }
                 },
 

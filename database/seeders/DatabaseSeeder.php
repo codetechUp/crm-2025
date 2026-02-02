@@ -15,5 +15,10 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call(KrayinDatabaseSeeder::class);
+        
+        // Ajouter des données de test (optionnel)
+        if ($this->command->confirm('Voulez-vous générer des données de test (leads, factures, devis, commandes, dépenses)?', false)) {
+            $this->call(FakeDataSeeder::class);
+        }
     }
 }

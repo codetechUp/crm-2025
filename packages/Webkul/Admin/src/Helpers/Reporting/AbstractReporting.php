@@ -29,6 +29,11 @@ abstract class AbstractReporting
     protected Carbon $lastEndDate;
 
     /**
+     * The user ID filter.
+     */
+    protected ?int $userId = null;
+
+    /**
      * Create a helper instance.
      *
      * @return void
@@ -38,6 +43,18 @@ abstract class AbstractReporting
         $this->setStartDate(request()->date('start'));
 
         $this->setEndDate(request()->date('end'));
+
+        $this->userId = request()->query('user_id') ? (int) request()->query('user_id') : null;
+    }
+
+    /**
+     * Get the user ID filter.
+     *
+     * @return int|null
+     */
+    public function getUserId(): ?int
+    {
+        return $this->userId;
     }
 
     /**

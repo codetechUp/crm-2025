@@ -131,6 +131,16 @@ class Dashboard
     }
 
     /**
+     * Returns sales performance statistics.
+     */
+    public function getSalesPerformance(): array
+    {
+        return [
+            'statistics' => $this->leadReporting->getSalesPerformance(),
+        ];
+    }
+
+    /**
      * Get the start date.
      *
      * @return \Carbon\Carbon

@@ -78,68 +78,72 @@
             </x-slot>
 
             <x-slot:content class="!p-0 w-80">
-                <div class="grid gap-2 p-4">
-                    <div class="flex items-center justify-between">
+                <div class="flex flex-col max-h-[500px]">
+                    <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800 shrink-0">
                         <p class="text-base font-semibold text-gray-800 dark:text-white">
                             Notifications
                         </p>
                     </div>
 
-                    @if ($totalAlerts == 0)
-                        <p class="text-sm text-gray-500 text-center py-4">
-                            Aucune alerte pour le moment.
-                        </p>
-                    @endif
+                    <div class="overflow-y-auto flex-1">
+                        <div class="grid gap-2 p-4">
+                            @if ($totalAlerts == 0)
+                                <p class="text-sm text-gray-500 text-center py-4">
+                                    Aucune alerte pour le moment.
+                                </p>
+                            @endif
 
-                    @if ($delayedCount > 0)
-                        <div class="flex flex-col gap-2">
-                            <p class="text-xs font-bold uppercase text-red-500">
-                                Commandes en retard de livraison ({{ $delayedCount }})
-                            </p>
+                            @if ($delayedCount > 0)
+                                <div class="flex flex-col gap-2">
+                                    <p class="text-xs font-bold uppercase text-red-500">
+                                        Commandes en retard de livraison ({{ $delayedCount }})
+                                    </p>
 
-                            @foreach ($delayedOrders as $order)
-                                <a 
-                                    href="{{ route('admin.orders.show', $order->id) }}"
-                                    class="flex items-start gap-2 rounded-md p-2 hover:bg-gray-50 dark:hover:bg-gray-950"
-                                >
-                                    <div class="mt-1 h-2 w-2 shrink-0 rounded-full bg-red-500"></div>
-                                    <div class="flex flex-col">
-                                        <span class="text-sm font-medium text-gray-800 dark:text-gray-300">
-                                            #{{ $order->id }} - {{ $order->subject }}
-                                        </span>
-                                        <span class="text-xs text-gray-500">
-                                            {{ \Carbon\Carbon::parse($order->expected_delivery_date)->diffForHumans() }}
-                                        </span>
-                                    </div>
-                                </a>
-                            @endforeach
+                                    @foreach ($delayedOrders as $order)
+                                        <a 
+                                            href="{{ route('admin.orders.show', $order->id) }}"
+                                            class="flex items-start gap-2 rounded-md p-2 hover:bg-gray-50 dark:hover:bg-gray-950"
+                                        >
+                                            <div class="mt-1 h-2 w-2 shrink-0 rounded-full bg-red-500"></div>
+                                            <div class="flex flex-col">
+                                                <span class="text-sm font-medium text-gray-800 dark:text-gray-300">
+                                                    #{{ $order->id }} - {{ $order->subject }}
+                                                </span>
+                                                <span class="text-xs text-gray-500">
+                                                    {{ \Carbon\Carbon::parse($order->expected_delivery_date)->diffForHumans() }}
+                                                </span>
+                                            </div>
+                                        </a>
+                                    @endforeach
+                                </div>
+                            @endif
+
+                            @if ($atRiskCount > 0)
+                                <div class="flex flex-col gap-2 mt-2">
+                                    <p class="text-xs font-bold uppercase text-orange-500">
+                                        Commandes à risque ({{ $atRiskCount }})
+                                    </p>
+
+                                    @foreach ($ordersAtRisk as $order)
+                                        <a 
+                                            href="{{ route('admin.orders.show', $order->id) }}"
+                                            class="flex items-start gap-2 rounded-md p-2 hover:bg-gray-50 dark:hover:bg-gray-950"
+                                        >
+                                            <div class="mt-1 h-2 w-2 shrink-0 rounded-full bg-orange-500"></div>
+                                            <div class="flex flex-col">
+                                                <span class="text-sm font-medium text-gray-800 dark:text-gray-300">
+                                                    #{{ $order->id }} - {{ $order->subject }}
+                                                </span>
+                                                <span class="text-xs text-gray-500">
+                                                    {{ \Carbon\Carbon::parse($order->expected_delivery_date)->diffForHumans() }}
+                                                </span>
+                                            </div>
+                                        </a>
+                                    @endforeach
+                                </div>
+                            @endif
                         </div>
-                    @endif
-
-                    @if ($atRiskCount > 0)
-                        <div class="flex flex-col gap-2 mt-2">
-                            <p class="text-xs font-bold uppercase text-orange-500">
-                                Commandes à risque ({{ $atRiskCount }})
-                            </p>
-
-                            @foreach ($ordersAtRisk as $order)
-                                <a 
-                                    href="{{ route('admin.orders.show', $order->id) }}"
-                                    class="flex items-start gap-2 rounded-md p-2 hover:bg-gray-50 dark:hover:bg-gray-950"
-                                >
-                                    <div class="mt-1 h-2 w-2 shrink-0 rounded-full bg-orange-500"></div>
-                                    <div class="flex flex-col">
-                                        <span class="text-sm font-medium text-gray-800 dark:text-gray-300">
-                                            #{{ $order->id }} - {{ $order->subject }}
-                                        </span>
-                                        <span class="text-xs text-gray-500">
-                                            {{ \Carbon\Carbon::parse($order->expected_delivery_date)->diffForHumans() }}
-                                        </span>
-                                    </div>
-                                </a>
-                            @endforeach
-                        </div>
-                    @endif
+                    </div>
                 </div>
             </x-slot>
         </x-admin::dropdown>

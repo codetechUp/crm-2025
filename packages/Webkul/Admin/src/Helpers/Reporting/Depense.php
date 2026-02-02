@@ -101,10 +101,15 @@ class Depense extends AbstractReporting
      */
     public function getTotalExpenses($startDate, $endDate): float
     {
-        $total = $this->depenseRepository
+        $query = $this->depenseRepository
             ->resetModel()
-            ->whereBetween('date', [$startDate, $endDate])
-            ->sum('montant');
+            ->whereBetween('date', [$startDate, $endDate]);
+
+        if ($this->userId) {
+            $query->where('user_id', $this->userId);
+        }
+
+        $total = $query->sum('montant');
 
         return (float) ($total ?? 0);
     }
@@ -116,14 +121,19 @@ class Depense extends AbstractReporting
     {
         $timeIntervals = $this->getTimeInterval($startDate, $endDate, $dateColumn, $period);
         
-        $stats = $this->depenseRepository
+        $query = $this->depenseRepository
             ->resetModel()
             ->select(
                 DB::raw($timeIntervals['group_column'] . ' as period'),
                 DB::raw('SUM(montant) as total')
             )
-            ->whereBetween('date', [$startDate, $endDate])
-            ->groupBy('period')
+            ->whereBetween('date', [$startDate, $endDate]);
+
+        if ($this->userId) {
+            $query->where('user_id', $this->userId);
+        }
+
+        $stats = $query->groupBy('period')
             ->orderBy('period')
             ->get()
             ->pluck('total', 'period')

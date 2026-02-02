@@ -22,6 +22,7 @@ class DashboardController extends Controller
         'open-leads-by-states' => 'getOpenLeadsByStates',
         'monthly-expense-result' => 'getMonthlyExpenseResult',
         'treasury-tracking'    => 'getTreasuryTracking',
+        'sales-performance'   => 'getSalesPerformance',
     ];
 
     /**

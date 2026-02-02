@@ -1991,6 +1991,12 @@ return [
                     'created-at'          => 'Created At',
                 ],
 
+                'stages' => [
+                    'need-more-info' => 'Need More Details',
+                    'won-value'     => 'Won Value',
+                    'save-btn'      => 'Save',
+                ],
+
                 'toolbar' => [
                     'search' => [
                         'title' => 'Search by Title',

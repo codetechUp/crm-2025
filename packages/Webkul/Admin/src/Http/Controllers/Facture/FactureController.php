@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
 use Prettus\Repository\Criteria\RequestCriteria;
@@ -19,6 +20,7 @@ use Webkul\Admin\Http\Resources\QuoteResource;
 use Webkul\Core\Traits\PDFHandler;
 use Webkul\Lead\Repositories\LeadRepository;
 use Webkul\Quote\Repositories\QuoteRepository;
+use Webkul\Admin\Notifications\Common;
 
 class FactureController extends Controller
 {
@@ -287,5 +289,135 @@ public function update(AttributeForm $request, int $id): RedirectResponse
             view('admin::quotes.pdf', compact('quote'))->render(),
             'Quote_'.$quote->subject.'_'.$quote->created_at->format('d-m-Y')
         );
+    }
+
+    /**
+     * Send reminder email for an unpaid invoice via AJAX.
+     */
+    public function sendRelance(): JsonResponse
+    {
+        $this->validate(request(), [
+            'facture_id' => 'required|integer',
+            'reply_to'   => 'required|array|min:1',
+            'reply_to.*' => 'email',
+            'subject'    => 'required|string',
+            'reply'      => 'required|string',
+        ]);
+
+        $quote = $this->quoteRepository->findOrFail(request('facture_id'));
+
+        // Calcul du reste à payer
+        $acompte = $quote->acompte ?? 0;
+        $resteAPayer = $quote->grand_total - $acompte;
+
+        if ($resteAPayer <= 0) {
+            return response()->json([
+                'message' => 'Cette facture est déjà réglée.',
+            ], 400);
+        }
+
+        // Récupération des emails depuis le formulaire
+        $emails = request('reply_to');
+
+        if (empty($emails)) {
+            return response()->json([
+                'message' => 'Aucune adresse email renseignée.',
+            ], 400);
+        }
+
+        try {
+            Mail::queue(new Common([
+                'to'      => $emails,
+                'cc'      => request('cc', []),
+                'bcc'     => request('bcc', []),
+                'subject' => request('subject'),
+                'body'    => nl2br(e(request('reply'))),
+                'attachments' => $this->prepareAttachments(request()->file('attachments', [])),
+            ]));
+
+            return response()->json([
+                'message' => 'E-mail de relance envoyé avec succès.',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Impossible d\'envoyer l\'e-mail de relance: '.$e->getMessage(),
+            ], 400);
+        }
+    }
+
+    /**
+     * Prepare attachments for email.
+     */
+    protected function prepareAttachments(array $files): array
+    {
+        $attachments = [];
+
+        foreach ($files as $file) {
+            if ($file && $file->isValid()) {
+                $attachments[] = [
+                    'content' => file_get_contents($file->getRealPath()),
+                    'name'    => $file->getClientOriginalName(),
+                    'mime'    => $file->getMimeType(),
+                ];
+            }
+        }
+
+        return $attachments;
+    }
+
+    /**
+     * Send reminder email for an unpaid invoice (legacy redirect method).
+     */
+    public function remind(int $id): RedirectResponse
+    {
+        $quote = $this->quoteRepository->findOrFail($id);
+
+        // Calcul du reste à payer
+        $acompte = $quote->acompte ?? 0;
+        $resteAPayer = $quote->grand_total - $acompte;
+
+        if ($resteAPayer <= 0) {
+            session()->flash('error', 'Cette facture est déjà réglée.');
+
+            return redirect()->back();
+        }
+
+        // Récupération des emails du contact
+        $emails = data_get($quote->person?->emails, '*.value');
+
+        if (empty($emails)) {
+            session()->flash('error', 'Aucune adresse email n\'est renseignée pour ce client.');
+
+            return redirect()->back();
+        }
+
+        $clientName = $quote->person?->name ?? 'Client';
+
+        $body = sprintf(
+            "Bonjour %s,<br><br>" .
+            "Nous nous permettons de vous relancer concernant votre facture n° %d d'un montant total de %s.<br>" .
+            "Le reste à payer est de %s.<br><br>" .
+            "Merci de bien vouloir procéder au règlement dans les plus brefs délais.<br><br>" .
+            "Cordialement,<br>%s",
+            e($clientName),
+            $quote->id,
+            e(core()->formatBasePrice($quote->grand_total)),
+            e(core()->formatBasePrice($resteAPayer)),
+            e(auth()->guard('user')->user()->name ?? config('app.name'))
+        );
+
+        try {
+            Mail::queue(new Common([
+                'to'      => $emails,
+                'subject' => 'Relance pour votre facture n° '.$quote->id,
+                'body'    => $body,
+            ]));
+
+            session()->flash('success', 'E-mail de relance envoyé avec succès.');
+        } catch (\Exception $e) {
+            session()->flash('error', 'Impossible d\'envoyer l\'e-mail de relance.');
+        }
+
+        return redirect()->back();
     }
 }

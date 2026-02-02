@@ -608,8 +608,27 @@
         
                 mounted() {
                     const params = new URLSearchParams(window.location.search);
-        
+
                     if (params.get('openModal')) {
+                        const replyToPrefill = params.get('reply_to_prefill');
+                        const subjectPrefill = params.get('subject_prefill');
+                        const bodyPrefill = params.get('body_prefill');
+
+                        if (replyToPrefill) {
+                            this.draft.reply_to = replyToPrefill.split(',').map(email => ({
+                                value: email,
+                                label: 'work',
+                            }));
+                        }
+
+                        if (subjectPrefill) {
+                            this.draft.subject = subjectPrefill;
+                        }
+
+                        if (bodyPrefill) {
+                            this.draft.reply = bodyPrefill;
+                        }
+
                         this.$refs.toggleComposeModal.toggle();
                     }
                 },

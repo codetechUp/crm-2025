@@ -2330,6 +2330,12 @@ return [
                     'created-at'          => 'Créé le',
                 ],
 
+                'stages' => [
+                    'need-more-info' => 'Besoin de plus de détails',
+                    'won-value'     => 'Valeur gagnée',
+                    'save-btn'      => 'Enregistrer',
+                ],
+
                 'toolbar' => [
                     'search' => [
                         'title' => 'Rechercher par titre',
@@ -2920,6 +2926,12 @@ return [
             'index' => [
                 'title'      => 'Entrées de Stock',
                 'create-btn' => 'Nouvelle Entrée',
+                'datagrid'   => [
+                    'id'         => 'ID',
+                    'date'       => 'Date',
+                    'supplier'   => 'Fournisseur',
+                    'created-by' => 'Créé par',
+                ],
             ],
             'create' => [
                 'title'           => 'Créer une Entrée de Stock',

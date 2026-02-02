@@ -388,7 +388,6 @@
                                 name="grand_total"
                                 :value="grandTotal"
                             >
-
                             <p>@{{ grandTotal }}</p>
                         </div>
                     </div>
