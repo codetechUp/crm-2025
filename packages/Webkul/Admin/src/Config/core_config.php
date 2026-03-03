@@ -87,11 +87,12 @@ return [
         'sort'   => 5,
         'fields' => [
             [
-                'name'          => 'tva_18',
-                'title'         => 'TVA 18%',
-                'type'          => 'boolean',
-                'default'       => false,
-                'info'          => 'Activer la TVA à 18% sur les produits et services',
+                'name'          => 'tva_default_rate',
+                'title'         => 'Taux TVA par défaut (%)',
+                'type'          => 'text',
+                'default'       => '18',
+                'validation'    => 'numeric|min:0|max:100',
+                'info'          => 'Taux de TVA par défaut à appliquer sur les devis et factures (en pourcentage)',
             ],
         ],
     ],
@@ -184,6 +185,34 @@ return [
                 'default'       => 'HLM 5 Villa N°1744, Dakar, Sénégal',
                 'validation'    => 'max:255',
                 'info'          => 'Adresse complète avec code postal et ville',
+            ],
+        ],
+    ], [
+        'key'    => 'general.general.email_contact',
+        'name'   => 'Email de contact',
+        'info'   => 'Adresse email affichée sur les devis et factures',
+        'sort'   => 12,
+        'fields' => [
+            [
+                'name'       => 'email_contact',
+                'title'      => 'Email de contact',
+                'type'       => 'text',
+                'validation' => 'email|max:255',
+                'info'       => 'Exemple : contact@votre-entreprise.com',
+            ],
+        ],
+    ], [
+        'key'    => 'general.general.telephone_contact',
+        'name'   => 'Téléphone de contact',
+        'info'   => 'Numéro de téléphone affiché sur les devis et factures',
+        'sort'   => 13,
+        'fields' => [
+            [
+                'name'       => 'telephone_contact',
+                'title'      => 'Téléphone de contact',
+                'type'       => 'text',
+                'validation' => 'max:50',
+                'info'       => 'Exemple : +221 33 000 00 00',
             ],
         ],
     ],

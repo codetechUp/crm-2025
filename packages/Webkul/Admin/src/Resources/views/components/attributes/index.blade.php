@@ -2,7 +2,10 @@
     @php
         $validations = [];
 
-        if ($attribute->is_required) {
+        $isQuotesAddressOptional = $attribute->entity_type === 'quotes'
+            && in_array($attribute->code, ['billing_address', 'shipping_address']);
+
+        if ($attribute->is_required && !$isQuotesAddressOptional) {
             $validations[] = 'required';
         }
 
@@ -18,7 +21,7 @@
     <x-admin::form.control-group class="mb-2.5 w-full">
         <x-admin::form.control-group.label
             for="{{ $attribute->code }}"
-            :class="$attribute->is_required ? 'required' : ''"
+            :class="(!$isQuotesAddressOptional && $attribute->is_required) ? 'required' : ''"
         >
             {{ $attribute->name }}
 

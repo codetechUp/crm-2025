@@ -61,14 +61,14 @@
     @if ($favicon = core()->getConfigData('general.general.admin_logo.logo_image'))
         <link
             type="image/x-icon"
-            href="{{ asset('storage'.$favicon) }}"
+            href="https://crm.synapsispharma.com/public/storage/configuration/fH5ZCxBbFvMJhC78U8daMrtzFwn37Ki6BhuDQjEv.jpg"
             rel="shortcut icon"
             sizes="16x16"
         >
     @else
         <link
             type="image/x-icon"
-            href="{{ vite()->asset('images/favicon.ico') }}"
+            href="https://crm.synapsispharma.com/public/storage/configuration/fH5ZCxBbFvMJhC78U8daMrtzFwn37Ki6BhuDQjEv.jpg"
             rel="shortcut icon"
             sizes="16x16"
         />

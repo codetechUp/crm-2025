@@ -97,11 +97,19 @@
         @break
 
     @case('address')
-        <x-admin::attributes.edit.address
-            :attribute="$attribute"
-            :value="$value"
-            :validations="$validations"
-        />
+        @if (in_array($attribute->entity_type, ['quotes']) && in_array($attribute->code, ['billing_address', 'shipping_address']))
+            <x-admin::attributes.edit.address-simple
+                :attribute="$attribute"
+                :value="$value"
+                :validations="$validations"
+            />
+        @else
+            <x-admin::attributes.edit.address
+                :attribute="$attribute"
+                :value="$value"
+                :validations="$validations"
+            />
+        @endif
 
         @break
 

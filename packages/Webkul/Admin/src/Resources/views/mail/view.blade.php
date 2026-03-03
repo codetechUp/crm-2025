@@ -1237,6 +1237,11 @@
 
                 methods: {
                     emailAction(action) {
+                        // Sécurise l'appel au cas où l'événement serait mal formé
+                        if (! action || ! action.email || typeof action.email.id === 'undefined') {
+                            return;
+                        }
+
                         this.action[action.email.id] = action;
 
                         if (! this.action.email) {
@@ -1385,7 +1390,13 @@
                     },
 
                     getActionType() {
-                        return this.action[this.email.id].type;
+                        const emailId = this.email?.id;
+
+                        if (! emailId || ! this.action || ! this.action[emailId]) {
+                            return '';
+                        }
+
+                        return this.action[emailId].type;
                     },
                 },
 
