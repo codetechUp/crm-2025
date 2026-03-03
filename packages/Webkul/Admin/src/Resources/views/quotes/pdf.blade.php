@@ -244,7 +244,17 @@
                 <div class="company-info">
                     <strong>{{ core()->getConfigData('general.general.registre_commerce.registre_commerce') }}</strong><br>
                     NINEA: {{ core()->getConfigData('general.general.ninea.ninea') }}<br>
-                    {{ core()->getConfigData('general.general.adresse_siege.adresse_siege') }}
+                    {{ core()->getConfigData('general.general.adresse_siege.adresse_siege') }}<br>
+                    @php
+                        $emailContact = core()->getConfigData('general.general.email_contact.email_contact');
+                        $telephoneContact = core()->getConfigData('general.general.telephone_contact.telephone_contact');
+                    @endphp
+                    @if($telephoneContact)
+                        Tél.: {{ $telephoneContact }}<br>
+                    @endif
+                    @if($emailContact)
+                        Email: {{ $emailContact }}
+                    @endif
                 </div>
             </div>
 
@@ -253,16 +263,72 @@
                 <div class="client-info">
                     <div class="info-label">Facturé à</div>
                     <div class="info-value">{{ $quote->person->name }}</div>
+
+                    @php
+                        $personPhone = is_array($quote->person->contact_numbers ?? null)
+                            ? ($quote->person->contact_numbers[0]['value'] ?? null)
+                            : null;
+
+                        $personOrg = $quote->person->organization->name ?? null;
+                    @endphp
+
+                    @if($personOrg)
+                        <div style="margin-top:5px; color:#444;">
+                            {{ $personOrg }}
+                        </div>
+                    @endif
+
                     @if($quote->person->address)
-                    <div style="margin-top:5px; color:#666;">
-                        {{ $quote->person->address }}
-                    </div>
+                        <div style="margin-top:5px; color:#666;">
+                            {{ $quote->person->address }}
+                        </div>
+                    @endif
+
+                    @if($personPhone)
+                        <div style="margin-top:5px; color:#666;">
+                            Tél. : {{ $personPhone }}
+                        </div>
+                    @endif
+
+                    @if(! empty($quote->shipping_address) && is_array($quote->shipping_address))
+                        
+                        <div style="margin-top:3px; color:#666;">
+                            @if(! empty($quote->shipping_address['address']))
+                                {{ $quote->shipping_address['address'] }}<br>
+                            @endif
+
+                            @php
+                                $shippingLine = [];
+
+                                if (! empty($quote->shipping_address['postcode'])) {
+                                    $shippingLine[] = $quote->shipping_address['postcode'];
+                                }
+
+                                if (! empty($quote->shipping_address['city'])) {
+                                    $shippingLine[] = $quote->shipping_address['city'];
+                                }
+                            @endphp
+
+                            @if(count($shippingLine))
+                                {{ implode(' ', $shippingLine) }}<br>
+                            @endif
+
+                            @if(! empty($quote->shipping_address['country']))
+                                {{ $quote->shipping_address['country'] }}
+                            @endif
+                        </div>
                     @endif
                 </div>
                 <div class="meta-info">
                     <div class="doc-title">{{ strtoupper($quote->type) }} N° {{ $quote->id }}</div>
                     <div class="info-label">Date d'émission</div>
                     <div class="info-value">{{ $quote->created_at->format('d/m/Y') }}</div>
+                    @if($quote->expired_at)
+                        <div class="info-label" style="margin-top:4px;">Date d'échéance</div>
+                        <div class="info-value">
+                            {{ \Carbon\Carbon::parse($quote->expired_at)->format('d/m/Y') }}
+                        </div>
+                    @endif
                 </div>
             </div>
 
@@ -294,24 +360,41 @@
             <!-- Totals -->
             <div class="totals-section">
                 <table class="totals-table">
+                    @php
+                        // Calculer le sous-total à partir des items si sub_total n'est pas défini
+                        $subTotal = $quote->sub_total ?? 0;
+                        if ($subTotal == 0 || $subTotal == null) {
+                            $subTotal = 0;
+                            foreach ($quote->items as $item) {
+                                $itemTotal = ($item->price * $item->quantity) - ($item->discount_amount ?? 0);
+                                $subTotal += $itemTotal;
+                            }
+                        }
+                        
+                        $tvaRate = $quote->tva_rate ?? 0;
+                        $tvaAmount = 0;
+                        $totalTTC = $subTotal;
+                        
+                        if ($tvaRate && $tvaRate > 0) {
+                            $tvaAmount = $subTotal * ($tvaRate / 100);
+                            $totalTTC = $subTotal + $tvaAmount;
+                        }
+                    @endphp
                     <tr>
                         <td class="total-label">Sous-total HT</td>
-                        <td class="total-value">{{ number_format($quote->sub_total, 0, ' ', '.') }} {{ $quote->devise }}</td>
+                        <td class="total-value">{{ number_format($subTotal, 0, ' ', '.') }} {{ $quote->devise }}</td>
                     </tr>
                     
-                    @if(core()->getConfigData('general.general.tva_settings.tva_18'))
+                    @if($tvaRate && $tvaRate > 0)
                     <tr>
-                        <td class="total-label">TVA (18%)</td>
-                        <td class="total-value">{{ number_format($quote->sub_total * 0.18, 0, ' ', '.') }} {{ $quote->devise }}</td>
+                        <td class="total-label">TVA ({{ number_format($tvaRate, 2, ',', ' ') }}%)</td>
+                        <td class="total-value">{{ number_format($tvaAmount, 0, ' ', '.') }} {{ $quote->devise }}</td>
                     </tr>
                     @endif
 
                     <!-- Acompte Logic -->
                     @if($quote->acompte && $quote->acompte != 0 && $quote->type == 'facture')
                         @php
-                            $totalTTC = core()->getConfigData('general.general.tva_settings.tva_18') 
-                                ? $quote->sub_total * 1.18 
-                                : $quote->sub_total;
                             $remaining = $totalTTC - $quote->acompte;
                         @endphp
                         <tr>
@@ -336,12 +419,7 @@
                                 <div style="background: #000; color: white; padding: 10px; margin-top: 10px; display:flex; justify-content:space-between; align-items:center;">
                                     <span style="font-size:14px; text-transform:uppercase;">Total TTC</span>
                                     <span style="font-size:18px; font-weight:bold;">
-                                        @if(core()->getConfigData('general.general.tva_settings.tva_18'))
-                                            {{ number_format($quote->sub_total * 1.18, 0, ' ', '.') }}
-                                        @else
-                                            {{ number_format($quote->sub_total, 0, ' ', '.') }}
-                                        @endif
-                                        {{ $quote->devise }}
+                                        {{ number_format($totalTTC, 0, ' ', '.') }} {{ $quote->devise }}
                                     </span>
                                 </div>
                             </td>

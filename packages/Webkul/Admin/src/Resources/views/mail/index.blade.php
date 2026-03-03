@@ -556,6 +556,8 @@
         
                 data() {
                     return {
+                        isDraftRoute: @json(request('route') == 'draft'),
+
                         selectedMail: false,
         
                         showCC: false,
@@ -693,9 +695,9 @@
                     },
         
                     editModal(row) {
-                        if(row.title == 'View') {
+                        if (! this.isDraftRoute) {
                             window.location.href = row.url;
-        
+
                             return;
                         }
         

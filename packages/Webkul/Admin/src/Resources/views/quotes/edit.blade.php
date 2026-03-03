@@ -165,6 +165,7 @@
                                     $leadId = old('lead_id') ?? optional($quote->leads->first())->id;
 
                                     $lookUpEntityData = app('Webkul\Attribute\Repositories\AttributeRepository')->getLookUpEntity('leads', $leadId);
+                                    $defaultTvaRate = core()->getConfigData('general.general.tva_settings.tva_default_rate') ?? 18;
                                 @endphp
 
                                 <x-admin::form.control-group class="w-full">
@@ -179,6 +180,23 @@
                                         can-add-new="true"
                                         @lookup-removed="setLeadEntity"
                                     ></v-lookup-component>
+                                </x-admin::form.control-group>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <x-admin::form.control-group class="w-full">
+                                    <x-admin::form.control-group.label>
+                                        Taux TVA (%)
+                                    </x-admin::form.control-group.label>
+
+                                    <x-admin::form.control-group.control
+                                        type="text"
+                                        name="tva_rate"
+                                        value="{{ old('tva_rate', $quote->tva_rate ?? $defaultTvaRate) }}"
+                                        rules="nullable|numeric|min:0|max:100"
+                                        :label="'Taux TVA (%)'"
+                                        :placeholder="'Taux TVA en pourcentage'"
+                                    />
                                 </x-admin::form.control-group>
                             </div>
 
@@ -344,7 +362,15 @@
 
                 <div class="flex justify-end">
                     <div class="grid w-[348px] gap-4 rounded-lg bg-gray-100 p-4 text-sm dark:bg-gray-950 dark:text-white">
-                      
+                        <div class="flex w-full justify-between gap-x-5">
+                            Sous-total HT
+                            <p>@{{ $admin.formatPrice(subTotal) }}</p>
+                        </div>
+
+                        <div class="flex w-full justify-between gap-x-5" v-if="tvaRate && tvaRate > 0">
+                            TVA (@{{ tvaRate }}%)
+                            <p>@{{ $admin.formatPrice(tvaAmount) }}</p>
+                        </div>
 
                         <div class="flex w-full justify-between gap-x-5">
                             @lang('admin::app.quotes.create.grand-total', ['symbol' => core()->currencySymbol(config('app.currency'))])
@@ -355,7 +381,7 @@
                                 :value="grandTotal"
                             >
 
-                            <p>@{{ grandTotal }}</p>
+                            <p>@{{ $admin.formatPrice(grandTotal) }}</p>
                         </div>
                     </div>
                 </div>
@@ -550,8 +576,21 @@
                 data() {
                     return {
                         adjustmentAmount: 0,
+                        tvaRate: {{ $quote->tva_rate ?? $defaultTvaRate ?? 0 }},
 
                         products: @json($quote->items),
+                    }
+                },
+
+                mounted() {
+                    // Écouter les changements du champ tva_rate
+                    const tvaRateInput = document.querySelector('input[name="tva_rate"]');
+                    if (tvaRateInput) {
+                        tvaRateInput.addEventListener('input', (e) => {
+                            this.tvaRate = parseFloat(e.target.value) || 0;
+                        });
+                        // Initialiser avec la valeur actuelle
+                        this.tvaRate = parseFloat(tvaRateInput.value) || {{ $quote->tva_rate ?? $defaultTvaRate ?? 0 }};
                     }
                 },
 
@@ -565,7 +604,7 @@
                         let total = 0;
 
                         this.products.forEach(product => {
-                            total += parseFloat(product.price * product.quantity);
+                            total += parseFloat(product.price * product.quantity) - parseFloat(product.discount_amount);
                         });
 
                         return total;
@@ -598,17 +637,24 @@
                     },
 
                     /**
+                     * Calculate the TVA amount based on tva_rate.
+                     *
+                     * @returns {Number}
+                     */
+                    tvaAmount() {
+                        if (!this.tvaRate || this.tvaRate <= 0) {
+                            return 0;
+                        }
+                        return this.subTotal * (this.tvaRate / 100);
+                    },
+
+                    /**
                      * Calculate the grand total of the products.
                      *
                      * @returns {Number}
                      */
                     grandTotal() {
-                        let total = 0;
-
-                        this.products.forEach(product => {
-                            total += parseFloat(product.price * product.quantity) + parseFloat(product.tax_amount) - parseFloat(product.discount_amount) + parseFloat(this.adjustmentAmount);
-                        });
-
+                        let total = this.subTotal + this.tvaAmount + parseFloat(this.adjustmentAmount || 0);
                         return total;
                     },
                 },

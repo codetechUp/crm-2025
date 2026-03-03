@@ -34,6 +34,7 @@ class Quote extends Model implements QuoteContract
         'discount_percent',
         'discount_amount',
         'tax_amount',
+        'tva_rate',
         'adjustment_amount',
         'acompte', 
         'sub_total',

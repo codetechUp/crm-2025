@@ -58,17 +58,28 @@ class AttributeForm extends FormRequest
             if ($attribute->type == 'boolean') {
                 continue;
             } elseif ($attribute->type == 'address') {
-                if (! $attribute->is_required) {
-                    continue;
-                }
+                $isQuotesAddress = $attribute->entity_type === 'quotes'
+                    && in_array($attribute->code, ['billing_address', 'shipping_address']);
 
-                $validations = [
-                    $attribute->code.'.address'  => 'required',
-                    $attribute->code.'.country'  => 'required',
-                    $attribute->code.'.state'    => 'required',
-                    $attribute->code.'.city'     => 'required',
-                    $attribute->code.'.postcode' => 'required',
-                ];
+                if ($isQuotesAddress) {
+                    $validations = [
+                        $attribute->code.'.address'  => 'nullable',
+                        $attribute->code.'.country'  => 'nullable',
+                        $attribute->code.'.state'    => 'nullable',
+                        $attribute->code.'.city'     => 'nullable',
+                        $attribute->code.'.postcode' => 'nullable',
+                    ];
+                } elseif (! $attribute->is_required) {
+                    continue;
+                } else {
+                    $validations = [
+                        $attribute->code.'.address'  => 'required',
+                        $attribute->code.'.country'  => 'required',
+                        $attribute->code.'.state'    => 'required',
+                        $attribute->code.'.city'     => 'required',
+                        $attribute->code.'.postcode' => 'required',
+                    ];
+                }
             } elseif ($attribute->type == 'email') {
                 $validations = [
                     $attribute->code              => [$attribute->is_required ? 'required' : 'nullable'],

@@ -99,7 +99,7 @@ class FactureController extends Controller
         session()->flash('success', trans('admin::app.quotes.index.create-success'));
 
         return request()->query('from') === 'lead' && $leadId
-            ? redirect()->route('admin.leads.view', ['id' => $leadId, 'from' => 'quotes'])
+            ? redirect()->route('admin.leads.view', ['id' => $leadId, 'from' => 'factures'])
             : redirect()->route('admin.factures.index');
     }
 
@@ -211,10 +211,10 @@ public function update(AttributeForm $request, int $id): RedirectResponse
     }
 
     Event::dispatch('quote.update.after', $quote);
-    session()->flash('success', trans('admin::app.quotes.index.update-success'));
+    session()->flash('success', 'Facture mise à jour avec succès.');
 
     return request()->query('from') === 'lead' && $leadId
-        ? redirect()->route('admin.leads.view', ['id' => $leadId, 'from' => 'quotes'])
+        ? redirect()->route('admin.leads.view', ['id' => $leadId, 'from' => 'factures'])
         : redirect()->route('admin.factures.index');
 }
     /**

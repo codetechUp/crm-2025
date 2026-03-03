@@ -17,12 +17,20 @@
 
     {!! view_render_event('admin.contacts.quotes.create.form_controls.before') !!}
 
-    <x-admin::form
-        :action="route('admin.factures.store').'?'.http_build_query(array_merge(
+    <form
+        method="POST"
+        action="{{ route('admin.factures.store').'?'.http_build_query(array_merge(
             request()->route()->parameters(),
             request()->all()
-        ))"
+        )) }}"
+        class="flex flex-col gap-4"
     >
+        @csrf
+        @if($errors->any())
+            <div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
+                <strong>Veuillez corriger les erreurs dans le formulaire.</strong>
+            </div>
+        @endif
         <div class="flex flex-col gap-4">
             <div class="flex items-center justify-between rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300">
                 <div class="flex flex-col gap-2">
@@ -56,7 +64,7 @@
                 <x-admin::shimmer.quotes />
             </v-quote>
         </div>
-    </x-admin::form>
+    </form>
 
     {!! view_render_event('admin.contacts.quotes.create.form_controls.after') !!}
 
@@ -176,6 +184,7 @@
 
                                 @php
                                     $lookUpEntityData = app('Webkul\Attribute\Repositories\AttributeRepository')->getLookUpEntity('leads', request('lead_id'));
+                                    $defaultTvaRate = core()->getConfigData('general.general.tva_settings.tva_default_rate') ?? 18;
                                 @endphp
 
                                 <x-admin::form.control-group class="w-full">
@@ -188,6 +197,23 @@
                                         :value='@json($lookUpEntityData)'
                                         can-add-new="true"
                                     ></v-lookup-component>
+                                </x-admin::form.control-group>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <x-admin::form.control-group class="w-full">
+                                    <x-admin::form.control-group.label>
+                                        Taux TVA (%)
+                                    </x-admin::form.control-group.label>
+
+                                    <x-admin::form.control-group.control
+                                        type="text"
+                                        name="tva_rate"
+                                        value="{{ old('tva_rate', $defaultTvaRate) }}"
+                                        rules="nullable|numeric|min:0|max:100"
+                                        :label="'Taux TVA (%)'"
+                                        :placeholder="'Taux TVA en pourcentage'"
+                                    />
                                 </x-admin::form.control-group>
                             </div>
 
@@ -359,11 +385,15 @@
 
                 <div class="flex justify-end">
                     <div class="grid w-[348px] gap-4 rounded-lg bg-gray-100 p-4 text-sm dark:bg-gray-950 dark:text-white">
-                        
+                        <div class="flex w-full justify-between gap-x-5">
+                            Sous-total HT
+                            <p>@{{ $admin.formatPrice(subTotal) }}</p>
+                        </div>
 
-                        
-                       
-
+                        <div class="flex w-full justify-between gap-x-5" v-if="tvaRate && tvaRate > 0">
+                            TVA (@{{ tvaRate }}%)
+                            <p>@{{ $admin.formatPrice(tvaAmount) }}</p>
+                        </div>
 
                         <div class="flex w-full justify-between gap-x-5">
                            Acompte
@@ -378,7 +408,6 @@
                                 
                             />
                         </div>
-                       
 
                         <div class="flex w-full justify-between gap-x-5">
                             @lang('admin::app.quotes.create.grand-total', ['symbol' => core()->currencySymbol(config('app.currency'))])
@@ -388,7 +417,7 @@
                                 name="grand_total"
                                 :value="grandTotal"
                             >
-                            <p>@{{ grandTotal }}</p>
+                            <p>@{{ $admin.formatPrice(grandTotal) }}</p>
                         </div>
                     </div>
                 </div>
@@ -577,6 +606,7 @@
                 data() {
                     return {
                         adjustmentAmount: 0,
+                        tvaRate: {{ $defaultTvaRate ?? 0 }},
 
                         products: [{
                             'id': null,
@@ -590,6 +620,18 @@
                     }
                 },
 
+                mounted() {
+                    // Écouter les changements du champ tva_rate
+                    const tvaRateInput = document.querySelector('input[name="tva_rate"]');
+                    if (tvaRateInput) {
+                        tvaRateInput.addEventListener('input', (e) => {
+                            this.tvaRate = parseFloat(e.target.value) || 0;
+                        });
+                        // Initialiser avec la valeur actuelle
+                        this.tvaRate = parseFloat(tvaRateInput.value) || {{ $defaultTvaRate ?? 0 }};
+                    }
+                },
+
                 computed: {
                     /**
                      * Calculate the sub total of the products.
@@ -600,7 +642,7 @@
                         let total = 0;
 
                         this.products.forEach(product => {
-                            total += parseFloat(product.price * product.quantity);
+                            total += parseFloat(product.price * product.quantity) - parseFloat(product.discount_amount);
                         });
 
                         return total;
@@ -633,17 +675,24 @@
                     },
 
                     /**
+                     * Calculate the TVA amount based on tva_rate.
+                     *
+                     * @returns {Number}
+                     */
+                    tvaAmount() {
+                        if (!this.tvaRate || this.tvaRate <= 0) {
+                            return 0;
+                        }
+                        return this.subTotal * (this.tvaRate / 100);
+                    },
+
+                    /**
                      * Calculate the grand total of the products.
                      *
                      * @returns {Number}
                      */
                     grandTotal() {
-                        let total = 0;
-
-                        this.products.forEach(product => {
-                            total += parseFloat(product.price * product.quantity) + parseFloat(product.tax_amount) - parseFloat(product.discount_amount) + parseFloat(this.adjustmentAmount);
-                        });
-
+                        let total = this.subTotal + this.tvaAmount + parseFloat(this.adjustmentAmount || 0);
                         return total;
                     },
                 },

@@ -92,8 +92,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS'),
-        'name'    => env('MAIL_FROM_NAME'),
+        'address' => env('MAIL_FROM_ADDRESS', 'contact@createxgroupe.com'),
+        'name'    => env('MAIL_FROM_NAME', 'Createx CRM'),
     ],
 
     /*
@@ -106,7 +106,7 @@ return [
     |
     */
 
-    'domain' => env('MAIL_DOMAIN', 'webkul.com'),
+    'domain' => env('MAIL_DOMAIN', 'createxgroupe.com'),
 
     /*
     |--------------------------------------------------------------------------

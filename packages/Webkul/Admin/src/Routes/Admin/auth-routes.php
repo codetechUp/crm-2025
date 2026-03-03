@@ -8,6 +8,14 @@ use Webkul\Admin\Http\Controllers\User\SessionController;
 
 Route::withoutMiddleware(['user'])->group(function () {
     /**
+     * Error page preview (for testing).
+     */
+    Route::get('error/500', function () {
+        $errorCode = 500;
+        return response()->view('admin::errors.index', compact('errorCode'), 500);
+    })->name('admin.errors.500');
+
+    /**
      * Redirect route.
      */
     Route::get('/', [Controller::class, 'redirectToLogin']);
