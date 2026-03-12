@@ -239,7 +239,37 @@
             <!-- Header -->
             <div class="header">
                 <div class="logo">
-                     <img src="https://crm.synapsispharma.com/public/storage/configuration/fH5ZCxBbFvMJhC78U8daMrtzFwn37Ki6BhuDQjEv.jpg" alt="Logo">
+                    @php
+                        // URL du logo (identique à l'original)
+                        $logoUrl = 'https://crm.synapsispharma.com/public/storage/configuration/fH5ZCxBbFvMJhC78U8daMrtzFwn37Ki6BhuDQjEv.jpg';
+                        
+                        // Tentative de récupération de l'image et conversion en base64
+                        $base64Logo = null;
+                        try {
+                            // Désactiver les erreurs avec @, mais mieux vaut utiliser un gestionnaire d'erreur
+                            $imageData = @file_get_contents($logoUrl);
+                            if ($imageData !== false) {
+                                // Détection du type MIME
+                                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                                $mimeType = finfo_buffer($finfo, $imageData);
+                                finfo_close($finfo);
+                                // Si finfo échoue, on force le type jpg (par défaut)
+                                if (!$mimeType) {
+                                    $mimeType = 'image/jpeg';
+                                }
+                                $base64Logo = 'data:' . $mimeType . ';base64,' . base64_encode($imageData);
+                            }
+                        } catch (Exception $e) {
+                            // En cas d'erreur, laisser $base64Logo à null
+                        }
+                    @endphp
+
+                    @if($base64Logo)
+                        <img src="{{ $base64Logo }}" alt="Logo">
+                    @else
+                        <!-- Fallback : afficher le logo via l'URL d'origine (au cas où) ou un texte -->
+                        <img src="{{ $logoUrl }}" alt="Logo" crossorigin="anonymous">
+                    @endif
                 </div>
                 <div class="company-info">
                     <strong>{{ core()->getConfigData('general.general.registre_commerce.registre_commerce') }}</strong><br>
@@ -429,13 +459,17 @@
             </div>
 
             <!-- Bank Info Footer -->
-            @if(core()->getConfigData('general.general.iban.iban'))
+            @php
+                $accountNumber = core()->getConfigData('general.general.numero_compte.numero_compte');
+            @endphp
+
+            @if($accountNumber)
             <div class="footer">
                 <div style="background: #f9f9f9; padding: 15px; border-radius: 5px; display: inline-block; width: 100%; box-sizing: border-box;">
                     <strong>Informations Bancaires</strong><br>
-                    Banque: {{ core()->getConfigData('general.general.nom_banque.nom_banque') }} &nbsp;|&nbsp;
-                    Code SWIFT: {{ core()->getConfigData('general.general.swift_code.swift_code') }} <br>
-                    IBAN: {{ core()->getConfigData('general.general.iban.iban') }}
+                    Banque: {{ core()->getConfigData('general.general.nom_banque.nom_banque') }} <br>
+                    
+                    Numéro de compte: {{ $accountNumber }}
                 </div>
             </div>
             @endif
@@ -455,10 +489,11 @@
                 var canvasImageHeight = downloadSection.height();
 
                 html2canvas(downloadSection[0], { 
-                    allowTaint: true, 
+                    allowTaint: false,
                     useCORS: true,
                     scale: 2,
-                    backgroundColor: '#ffffff'
+                    backgroundColor: '#ffffff',
+                    logging: true, // Pour déboguer, vous pouvez l'enlever en production
                 })
                 .then(function (canvas) {
                     var imgData = canvas.toDataURL('image/png', 1.0);
@@ -468,6 +503,8 @@
                     
                     pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
                     pdf.save('{{ $quote->type_ }}_{{ $quote->id }}.pdf');
+                }).catch(function(error) {
+                    console.error('Erreur html2canvas :', error);
                 });
             });
         })(jQuery);

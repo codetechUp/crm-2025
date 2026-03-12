@@ -151,10 +151,20 @@ class ProductController extends Controller
      */
     public function search(): JsonResource
     {
+        $limit = (int) request('limit', request('per_page', 50));
+
+        if ($limit < 1) {
+            $limit = 1;
+        }
+
+        if ($limit > 50) {
+            $limit = 50;
+        }
+
         $products = $this->productRepository
             ->pushCriteria(app(RequestCriteria::class))
             ->orderBy('created_at', 'desc')
-            ->take(5)
+            ->take($limit)
             ->get();
 
         return ProductResource::collection($products);

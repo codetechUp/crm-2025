@@ -212,6 +212,16 @@ return [
         'route' => 'admin.products.index',
         'sort'  => 7,
     ], [
+        'key'   => 'products.all',
+        'name'  => 'Tous les produits',
+        'route' => 'admin.products.index',
+        'sort'  => 1,
+    ], [
+        'key'   => 'products.categories',
+        'name'  => 'Catégories',
+        'route' => 'admin.products.categories.index',
+        'sort'  => 2,
+    ], [
         'key'   => 'products.create',
         'name'  => 'admin::app.acl.create',
         'route' => ['admin.products.create', 'admin.products.store'],

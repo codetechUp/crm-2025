@@ -2931,6 +2931,7 @@ return [
                     'date'       => 'Date',
                     'supplier'   => 'Fournisseur',
                     'created-by' => 'Créé par',
+                    'delete'     => 'Supprimer',
                 ],
             ],
             'create' => [
@@ -2950,6 +2951,9 @@ return [
                 'add-product'     => 'Ajouter un Produit',
                 'search-products' => 'Rechercher des produits',
             ],
+            'create-success' => 'Entrée de stock créée avec succès.',
+            'delete-success' => 'Entrée de stock supprimée avec succès.',
+            'delete-failed'  => 'Échec de la suppression de l\'entrée de stock.',
         ],
     ],
 
