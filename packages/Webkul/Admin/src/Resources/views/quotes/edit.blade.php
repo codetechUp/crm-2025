@@ -174,7 +174,7 @@
                                     </x-admin::form.control-group.label>
 
                                     <v-lookup-component
-                                        :key="leadEntity.id"
+                                        :key="leadEntity?.id ?? 'lead-lookup'"
                                         :attribute="{'code': 'lead_id', 'name': 'Lead', 'lookup_type': 'leads'}"
                                         :value="leadEntity"
                                         can-add-new="true"
@@ -189,13 +189,13 @@
                                         Taux TVA (%)
                                     </x-admin::form.control-group.label>
 
-                                    <x-admin::form.control-group.control
-                                        type="text"
+                                    <input
+                                        type="number"
+                                        step="0.01"
                                         name="tva_rate"
-                                        value="{{ old('tva_rate', $quote->tva_rate ?? $defaultTvaRate) }}"
-                                        rules="nullable|numeric|min:0|max:100"
-                                        :label="'Taux TVA (%)'"
-                                        :placeholder="'Taux TVA en pourcentage'"
+                                        v-model.number="tvaRate"
+                                        class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                                        placeholder="Taux TVA en pourcentage"
                                     />
                                 </x-admin::form.control-group>
                             </div>
@@ -276,7 +276,10 @@
                         </div>
 
                         <!-- Quote Item List Vue Component -->
-                        <v-quote-item-list :errors="errors"></v-quote-item-list>
+                        <v-quote-item-list
+                            :errors="errors"
+                            v-model:tvaRate="tvaRate"
+                        ></v-quote-item-list>
                     </div>
 
                     {!! view_render_event('admin.contacts.quotes.edit.quote_information.after', ['quote' => $quote]) !!}
@@ -542,7 +545,8 @@
                             { id: 'quote-items', label: '@lang('admin::app.quotes.create.quote-items')' }
                         ],
 
-                        leadEntity: @json($lookUpEntityData ?? []),
+                        leadEntity: @json($lookUpEntityData),
+                        tvaRate: parseFloat(@json(old('tva_rate', $quote->tva_rate ?? $defaultTvaRate ?? 0))) || 0,
                     };
                 },
 
@@ -571,92 +575,43 @@
             app.component('v-quote-item-list', {
                 template: '#v-quote-item-list-template',
 
-                props: ['errors'],
+                props: ['errors', 'tvaRate'],
+
+                emits: ['update:tvaRate'],
 
                 data() {
                     return {
                         adjustmentAmount: 0,
-                        tvaRate: {{ $quote->tva_rate ?? $defaultTvaRate ?? 0 }},
-
                         products: @json($quote->items),
                     }
                 },
 
-                mounted() {
-                    // Écouter les changements du champ tva_rate
-                    const tvaRateInput = document.querySelector('input[name="tva_rate"]');
-                    if (tvaRateInput) {
-                        tvaRateInput.addEventListener('input', (e) => {
-                            this.tvaRate = parseFloat(e.target.value) || 0;
-                        });
-                        // Initialiser avec la valeur actuelle
-                        this.tvaRate = parseFloat(tvaRateInput.value) || {{ $quote->tva_rate ?? $defaultTvaRate ?? 0 }};
-                    }
-                },
-
                 computed: {
-                    /**
-                     * Calculate the sub total of the products.
-                     *
-                     * @returns {Number}
-                     */
                     subTotal() {
-                        let total = 0;
+                        return this.products.reduce((t, p) => {
+                            const price = parseFloat(p.price) || 0;
+                            const quantity = parseFloat(p.quantity) || 0;
+                            const discount = parseFloat(p.discount_amount) || 0;
 
-                        this.products.forEach(product => {
-                            total += parseFloat(product.price * product.quantity) - parseFloat(product.discount_amount);
-                        });
-
-                        return total;
+                            return t + ((price * quantity) - discount);
+                        }, 0);
                     },
 
-                    /**
-                     * Calculate the total discount amount of the products.
-                     *
-                     * @returns {Number}
-                     */
-                    discountAmount() {
-                        let total = 0;
-
-                        this.products.forEach(product => total += parseFloat(product.discount_amount));
-
-                        return total;
-                    },
-
-                    /**
-                     * Calculate the total tax amount of the products.
-                     *
-                     * @returns {Number}
-                     */
-                    taxAmount() {
-                        let total = 0;
-
-                        this.products.forEach(product => total += parseFloat(product.tax_amount));
-
-                        return total;
-                    },
-
-                    /**
-                     * Calculate the TVA amount based on tva_rate.
-                     *
-                     * @returns {Number}
-                     */
                     tvaAmount() {
-                        if (!this.tvaRate || this.tvaRate <= 0) {
+                        const rate = parseFloat(this.tvaRate);
+
+                        if (Number.isNaN(rate) || rate <= 0) {
                             return 0;
                         }
-                        return this.subTotal * (this.tvaRate / 100);
+
+                        return this.subTotal * (rate / 100);
                     },
 
-                    /**
-                     * Calculate the grand total of the products.
-                     *
-                     * @returns {Number}
-                     */
                     grandTotal() {
-                        let total = this.subTotal + this.tvaAmount + parseFloat(this.adjustmentAmount || 0);
-                        return total;
-                    },
+                        const total = this.subTotal + this.tvaAmount;
+
+                        return Number.isNaN(total) ? 0 : total;
+                    }
                 },
 
                 methods: {

@@ -1,7 +1,11 @@
 {!! view_render_event('admin.components.activities.actions.activity.participants.before') !!}
 
 <!-- Participants Vue Component -->
-<v-activity-participants></v-activity-participants>
+<v-activity-participants
+    @isset($participants)
+        :participants='@json($participants)'
+    @endisset
+></v-activity-participants>
 
 {!! view_render_event('admin.components.activities.actions.activity.participants.after') !!}
 
@@ -17,6 +21,12 @@
                     <template v-for="userType in ['users', 'persons']">
                         {!! view_render_event('admin.components.activities.actions.activity.participants.user_type.before') !!}
 
+                        <input
+                            type="hidden"
+                            :name="`participants[${userType}][]`"
+                            value=""
+                        />
+
                         <li
                             class="flex items-center gap-1 rounded-md bg-slate-100 pl-2 dark:bg-gray-950 dark:text-gray-300"
                             v-for="(user, index) in addedParticipants[userType]"
@@ -26,7 +36,7 @@
                             <!-- User Id -->
                             <x-admin::form.control-group.control
                                 type="hidden"
-                                ::name="'participants.' + userType + '[' + index + ']'"
+                                ::name="'participants[' + userType + '][' + index + ']'"
                                 ::value="user.id"
                             />
 

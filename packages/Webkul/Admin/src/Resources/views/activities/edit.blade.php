@@ -108,25 +108,29 @@
                             @lang('admin::app.activities.edit.participants')
                         </x-admin::form.control-group.label>
 
-                        <!-- Participants Multi lookup Vue Component -->
-                        <v-multi-lookup-component>
-                            <div
-                                class="relative rounded border border-gray-200 px-2 py-1 hover:border-gray-400 focus:border-gray-400 dark:border-gray-800 dark:hover:border-gray-400 dark:focus:border-gray-400"
-                                role="button"
-                            >
-                                <ul class="flex flex-wrap items-center gap-1">
-                                    <li>
-                                        <input
-                                            type="text"
-                                            class="w-full px-1 py-1 dark:bg-gray-900 dark:text-gray-300"
-                                            placeholder="@lang('admin::app.activities.edit.participants')"
-                                        />
-                                    </li>
-                                </ul>
+                        @php
+                            $participants = [
+                                'users'   => $activity->participants
+                                    ->filter(fn ($participant) => ! empty($participant->user_id) && $participant->user)
+                                    ->map(fn ($participant) => [
+                                        'id'   => $participant->user->id,
+                                        'name' => $participant->user->name,
+                                    ])
+                                    ->values(),
 
-                                <span class="icon-down-arrow absolute top-1.5 text-2xl ltr:right-1.5 rtl:left-1.5"></span>
-                            </div>
-                        </v-multi-lookup-component>
+                                'persons' => $activity->participants
+                                    ->filter(fn ($participant) => ! empty($participant->person_id) && $participant->person)
+                                    ->map(fn ($participant) => [
+                                        'id'   => $participant->person->id,
+                                        'name' => $participant->person->name,
+                                    ])
+                                    ->values(),
+                            ];
+                        @endphp
+
+                        @include('admin::components.activities.actions.activity.participants', [
+                            'participants' => $participants,
+                        ])
                     </x-admin::form.control-group>
 
                     <!-- Lead -->
