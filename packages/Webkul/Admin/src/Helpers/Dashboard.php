@@ -6,6 +6,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Webkul\Admin\Helpers\Reporting\Activity;
 use Webkul\Admin\Helpers\Reporting\Depense;
+use Webkul\Admin\Helpers\Reporting\Facture;
 use Webkul\Admin\Helpers\Reporting\Lead;
 use Webkul\Admin\Helpers\Reporting\Organization;
 use Webkul\Admin\Helpers\Reporting\Person;
@@ -27,6 +28,7 @@ class Dashboard
         protected Organization $organizationReporting,
         protected Quote $quoteReporting,
         protected Depense $depenseReporting,
+        protected Facture $factureReporting,
     ) {}
 
     /**
@@ -128,6 +130,19 @@ class Dashboard
     public function getTreasuryTracking(): array
     {
         return $this->depenseReporting->getTreasuryTracking();
+    }
+
+    /**
+     * Returns invoice statistics.
+     */
+    public function getInvoiceStats(): array
+    {
+        return [
+            'total_invoices'  => $this->factureReporting->getTotalFacturesProgress(),
+            'total_amount'    => $this->factureReporting->getTotalFacturesAmountProgress(),
+            'total_acomptes'  => $this->factureReporting->getTotalAcomptesProgress(),
+            'total_restant'   => $this->factureReporting->getTotalRestantProgress(),
+        ];
     }
 
     /**

@@ -44,6 +44,9 @@
             <!-- Revenue Stats -->
             @include('admin::dashboard.index.revenue')
 
+            <!-- Invoice Stats -->
+            @include('admin::dashboard.index.invoice-stats')
+
             <!-- Over All Stats -->
             @include('admin::dashboard.index.over-all')
 

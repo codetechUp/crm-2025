@@ -23,6 +23,7 @@ class DashboardController extends Controller
         'monthly-expense-result' => 'getMonthlyExpenseResult',
         'treasury-tracking'    => 'getTreasuryTracking',
         'sales-performance'   => 'getSalesPerformance',
+        'invoice-stats'       => 'getInvoiceStats',
     ];
 
     /**
