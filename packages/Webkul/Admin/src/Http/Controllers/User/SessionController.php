@@ -16,7 +16,21 @@ class SessionController extends Controller
     public function create(): RedirectResponse|View
     {
         if (auth()->guard('user')->check()) {
-            return redirect()->route('admin.dashboard.index');
+            if (bouncer()->hasPermission('dashboard')) {
+                return redirect()->route('admin.dashboard.index');
+            }
+
+            $availableNextMenu = menu()->getItems('admin')?->first();
+
+            if (is_null($availableNextMenu)) {
+                session()->flash('error', trans('admin::app.users.not-permission'));
+
+                auth()->guard('user')->logout();
+
+                return redirect()->route('admin.session.create');
+            }
+
+            return redirect()->to($availableNextMenu->getUrl());
         }
 
         $previousUrl = url()->previous();

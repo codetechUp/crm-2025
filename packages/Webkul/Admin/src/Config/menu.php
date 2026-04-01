@@ -337,11 +337,11 @@ return [
         'icon-class' => 'icon-file',
     ],
     [
-            'key' => 'finance',
-            'name' => 'Dépenses',
-            'route' => 'admin.depenses.index',
+            'key'        => 'depenses',
+            'name'       => 'Dépenses',
+            'route'      => 'admin.depenses.index',
             'icon-class' => 'icon-dollar',
-            'sort' => 10,
+            'sort'       => 10,
     ],
 
 ];

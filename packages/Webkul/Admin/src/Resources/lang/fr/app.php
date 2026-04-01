@@ -1037,7 +1037,7 @@ return [
                 'on-hand'   => 'Disponible',
                 'tag-name'  => 'Nom de l\'étiquette',
                 'price'     => 'Prix',
-                'sku'       => 'SKU',
+                'sku'       => 'Référence',
                 'view'      => 'Voir',
             ],
         ],
@@ -1089,7 +1089,7 @@ return [
         ],
 
         'view' => [
-            'sku'         => 'SKU',
+            'sku'         => 'Référence',
             'all'         => 'Tous',
             'notes'       => 'Notes',
             'files'       => 'Fichiers',

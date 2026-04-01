@@ -158,13 +158,13 @@ class ProductController extends Controller
         }
 
         if ($limit > 50) {
-            $limit = 50;
+            $limit =50 ;
         }
 
         $products = $this->productRepository
             ->pushCriteria(app(RequestCriteria::class))
             ->orderBy('created_at', 'desc')
-            ->take($limit)
+            ->take(200)
             ->get();
 
         return ProductResource::collection($products);

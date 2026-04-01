@@ -39,10 +39,6 @@ class DepenseServiceProvider extends ServiceProvider
     protected function registerConfig()
     {
         $this->mergeConfigFrom(
-            dirname(__DIR__) . '/Config/menu.php', 'menu.admin'
-        );
-
-        $this->mergeConfigFrom(
             dirname(__DIR__) . '/Config/acl.php', 'acl'
         );
     }
